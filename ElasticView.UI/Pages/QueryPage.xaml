@@ -1,0 +1,27 @@
+﻿<Page x:Class="ElasticView.UI.Pages.QueryPage"
+      xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+      xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+      xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+      xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+      xmlns:local="clr-namespace:ElasticView.UI.Pages"
+      xmlns:vm="clr-namespace:ElasticView.UI.Models"
+      xmlns:controllers="clr-namespace:ElasticView.UI.Controls" 
+      xmlns:md="http://materialdesigninxaml.net/winfx/xaml/themes"
+      xmlns:hc="https://handyorg.github.io/handycontrol"
+      mc:Ignorable="d" 
+      d:DesignHeight="768" d:DesignWidth="1024"
+      Title="QueryPage">    
+    <Page.DataContext>
+        <vm:QueryPageViewModel />
+    </Page.DataContext>
+
+    <StackPanel>
+        <hc:PasswordBox Name="testPwd" IsSafeEnabled="False" />
+        <hc:TextBox Visibility="Collapsed" Name="pwdStr" Text="{Binding UnsafePassword, 
+            ElementName=testPwd, UpdateSourceTrigger=PropertyChanged}" />
+
+        <TextBlock Text="{Binding Pwd}" />
+        <Button Content="click" Command="{Binding UpdatePwdCommand}" CommandParameter="{Binding ElementName=pwdStr, Path=Text}" />
+    </StackPanel>
+    
+</Page>

@@ -1,0 +1,360 @@
+﻿<Page x:Class="ElasticView.UI.Pages.DashPage"
+      xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+      xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+      xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+      xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+      xmlns:local="clr-namespace:ElasticView.UI.Pages" 
+      xmlns:controllers="clr-namespace:ElasticView.UI.Controls" 
+      xmlns:md="http://materialdesigninxaml.net/winfx/xaml/themes"
+      xmlns:hc="https://handyorg.github.io/handycontrol"
+      xmlns:vm="clr-namespace:ElasticView.UI.Models"
+      mc:Ignorable="d" 
+      d:DesignHeight="768" d:DesignWidth="1024"
+     
+      Title="DashPage">
+    <Page.DataContext>
+        <vm:DashPageViewModel />
+    </Page.DataContext>
+
+    <Page.Resources>
+        <Style x:Key="pageButton" TargetType="ToggleButton">
+            <Setter Property="Height" Value="20" />
+            <Setter Property="Width" Value="auto" />
+            <Setter Property="Background" Value="Transparent"/>
+            <!--<Setter Property="Margin" Value="0,0,0,0" />-->
+            <Setter Property="Cursor" Value="Hand"/>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="ToggleButton">
+                        <Grid>
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="*" />
+                                <ColumnDefinition Width="*" />
+                            </Grid.ColumnDefinitions>
+                            <Border x:Name="btnBorder" Background="{TemplateBinding Background}" Width="30" Height="15" CornerRadius="2" />
+                            <TextBlock Grid.Column="1" Margin="5,0,0,0" Text="{TemplateBinding Content}" FontSize="15" FontWeight="Thin" Foreground="Black" VerticalAlignment="Center" />
+                        </Grid>
+                        <ControlTemplate.Triggers>
+                            <Trigger Property="IsChecked" Value="True">
+                                <Setter Property="Background" Value="#E0E0E0" TargetName="btnBorder"  />
+                            </Trigger>
+                        </ControlTemplate.Triggers>
+                    </ControlTemplate>
+
+                </Setter.Value>
+            </Setter>
+        </Style>
+    </Page.Resources>
+    <ScrollViewer>
+
+        <Grid>
+            <Grid.RowDefinitions>
+                <RowDefinition Height="40" />
+                <RowDefinition Height="*" />
+            </Grid.RowDefinitions>
+            <Grid Grid.Row="0" Background="{StaticResource mainTitleBackgrond}">
+
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="9*" />
+                    <ColumnDefinition Width="1*" />
+                </Grid.ColumnDefinitions>
+                <StackPanel Orientation="Horizontal">
+                    <md:PackIcon Kind="ChartBar" Margin="15,0,0,0" Foreground="{StaticResource mainlightGreen}" Width="20" Height="40" />
+                    <TextBlock Text="Overview【集群概要】" Margin="10,0,0,0" Foreground="{StaticResource mainlightGreen}" FontSize="16" VerticalAlignment="Center" />
+                </StackPanel>
+            </Grid>
+            <Border Grid.Row="1" BorderThickness="2" BorderBrush="{StaticResource borderColor}">
+
+                <StackPanel Margin="20,5,20,5" Background="{StaticResource mainBackgrond}" >
+                    <Grid  Height="80">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="1*"/>
+                            <ColumnDefinition Width="1*"/>
+                            <ColumnDefinition Width="1*"/>
+                            <ColumnDefinition Width="1*"/>
+                            <ColumnDefinition Width="1*"/>
+                            <ColumnDefinition Width="1*"/>
+                        </Grid.ColumnDefinitions>
+                        <controllers:UserMenuCard Margin="0,0,10,0" Grid.Column="0" 
+                                                  Total="{Binding IndicesInfo.TotalShards}"
+                                                  IconKind="Finance" 
+                                                  Background="{StaticResource mainPurple}"
+                                                  Description="Total    Shards" />
+                        <controllers:UserMenuCard Margin="0,0,10,0" Grid.Column="1" Total="{Binding IndicesInfo.SuccessfulShards}" IconKind="CheckCircle" Background="{StaticResource mainLightBlue}" Description="Successful Shards" />
+                        <controllers:UserMenuCard Margin="0,0,10,0" Grid.Column="2" Total="{Binding IndicesInfo.Indices}" IconKind="Database" Background="{StaticResource mainPink}" Description="indices" />
+                        <controllers:UserMenuCard Margin="0,0,10,0" Grid.Column="3" Total="{Binding IndicesInfo.Templates}" IconKind="FormatListBulleted" Background="{StaticResource mainlightGreen}" Description="Templates" />
+                        <controllers:UserMenuCard Margin="0,0,10,0" Grid.Column="4" Total="{Binding IndicesInfo.Documents}" IconKind="FileDocument" Background="{StaticResource mainYellow}" Description="Documents" />
+                        <controllers:UserMenuCard Grid.Column="5" Total="{Binding IndicesInfo.TotalSize}" IconKind="ContentSave" Background="{StaticResource mainDarkGreen}" Description="Total Size" />
+
+                    </Grid>
+
+                    <Grid Margin="0,20,0,0" Height="280" Background="White">
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="30" />
+                            <RowDefinition Height="25" />
+                            <RowDefinition Height="*" />
+                            <!--<RowDefinition Height="30" />-->
+                        </Grid.RowDefinitions>
+                        <Label Content="ElasticSearch Cluster Status" VerticalAlignment="Center" HorizontalAlignment="Center" FontSize="20" FontWeight="Bold" Foreground="{StaticResource titleTextBlack}" />
+                        <Label Grid.Row="1" Content="内存,硬盘,JVM状" HorizontalAlignment="Center" VerticalAlignment="Center" FontSize="15" Foreground="#AAAAAA"/>
+                        <!--#region 圆环图 -->
+                        <Grid Grid.Row="2">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="*" />
+                                <ColumnDefinition Width="*" />
+                                <ColumnDefinition Width="*" />
+                                <ColumnDefinition Width="*" />
+                                <ColumnDefinition Width="*" />
+                                <ColumnDefinition Width="*" />
+                            </Grid.ColumnDefinitions>
+                            <!--<controllers:UserPieChart UsedValues="10" UnUseValue="90" />-->
+                            <Grid>
+                                <Grid.RowDefinitions>
+                                    <RowDefinition Height="*" />
+                                    <RowDefinition Height="40" />
+                                </Grid.RowDefinitions>
+                                <hc:CircleProgressBar Value="{Binding  JvmInfo.UsedPercentValue}" 
+                                                      ArcThickness="20" 
+                                                      Foreground="#DE3D3A"
+                                                      >
+                                    <hc:CircleProgressBar.ToolTip>
+                                        <ToolTip Content="{Binding  JvmInfo.Desc }" />
+                                    </hc:CircleProgressBar.ToolTip>
+                                </hc:CircleProgressBar>
+                                <!--<TextBlock Grid.Row="1" Text="{Binding  JvmInfo.Desc }" FontSize="12" />-->
+                                <ToggleButton Grid.Row="1" Style="{DynamicResource pageButton}" Background="#DE3D3A" Content="Jvm" />
+                            </Grid>
+                            <Grid Grid.Column="1">
+                                <Grid.RowDefinitions>
+                                    <RowDefinition Height="*" />
+                                    <RowDefinition Height="40" />
+                                </Grid.RowDefinitions>
+                                <hc:CircleProgressBar Value="{Binding  MemberInfo.UsedPercent}" 
+                                                      ArcThickness="20" 
+                                                      Foreground="{StaticResource mainDarkGreen}"
+                                                      >
+                                    <hc:CircleProgressBar.ToolTip>
+                                        <ToolTip Content="{Binding  MemberInfo.Desc}" />
+                                    </hc:CircleProgressBar.ToolTip>
+                                </hc:CircleProgressBar>
+                                <!--<TextBlock Grid.Row="1" Text="{Binding  MemberInfo.Desc }" FontSize="12" />-->
+                                <ToggleButton Grid.Row="1" Style="{DynamicResource pageButton}"
+                                              Background="{StaticResource mainDarkGreen}" Content="Mem" />
+                            </Grid>
+                            <Grid Grid.Column="2">
+                                <Grid.RowDefinitions>
+                                    <RowDefinition Height="*" />
+                                    <RowDefinition Height="40" />
+                                </Grid.RowDefinitions>
+                                <hc:CircleProgressBar Value="{Binding  FileSystemInfo.UsedPercentValue}" 
+                                                      ArcThickness="20" 
+                                                      Foreground="#60AFB7"
+                                                      >
+                                    <hc:CircleProgressBar.ToolTip>
+                                        <ToolTip Content="{Binding  FileSystemInfo.Desc}" />
+                                    </hc:CircleProgressBar.ToolTip>
+                                </hc:CircleProgressBar>
+                                <!--<TextBlock Grid.Row="1" Text="{Binding  FileSystemInfo.Desc }" FontSize="12" />-->
+                                <ToggleButton Grid.Row="1" Style="{DynamicResource pageButton}"
+                                              Background="#60AFB7" Content="Fs" />
+                            </Grid>
+                            <Grid Grid.Column="3">
+                                <Grid.RowDefinitions>
+                                    <RowDefinition Height="*" />
+                                    <RowDefinition Height="40" />
+                                </Grid.RowDefinitions>
+                                <hc:CircleProgressBar Value="0" 
+                                                      ArcThickness="20" 
+                                                      Foreground="#EF9173"
+                                                      />
+                                <!--<TextBlock Grid.Row="1" Text="" FontSize="12" />-->
+                                <ToggleButton Grid.Row="1" Style="{DynamicResource pageButton}"
+                                              Background="#EF9173" Content="FieldData" />
+                            </Grid>
+                            <Grid Grid.Column="4">
+                                <Grid.RowDefinitions>
+                                    <RowDefinition Height="*" />
+                                    <RowDefinition Height="40" />
+                                </Grid.RowDefinitions>
+                                <hc:CircleProgressBar Value="0" 
+                                                      ArcThickness="20" 
+                                                      Foreground="#96DAC0"
+                                                      />
+                                <!--<TextBlock Grid.Row="1" Text="" FontSize="12" />-->
+                                <ToggleButton Grid.Row="1" Style="{DynamicResource pageButton}" Background="#96DAC0" Content="QueryCache" />
+                            </Grid>
+                            <Grid Grid.Column="5">
+                                <Grid.RowDefinitions>
+                                    <RowDefinition Height="*" />
+                                    <RowDefinition Height="40" />
+                                </Grid.RowDefinitions>
+                                <hc:CircleProgressBar Value="{Binding  CpuInfo.UsedPercent}" 
+                                                      ArcThickness="20" 
+                                                      Foreground="#96DAC0"
+                                                   >
+                                    <hc:CircleProgressBar.ToolTip>
+                                        <ToolTip Content="{Binding  CpuInfo.Desc}" />
+                                    </hc:CircleProgressBar.ToolTip>
+                                </hc:CircleProgressBar>
+                                <!--<TextBlock Grid.Row="1" Text="{Binding  CpuInfo.Desc }" FontSize="12" />-->
+                                <ToggleButton Grid.Row="1" Style="{DynamicResource pageButton}" 
+                                              Background="#78AE92" Content="CPU" />
+                            </Grid>
+                        </Grid>
+                        <!--#endregion-->
+                    </Grid>
+                    <Grid Height="240">
+                        <Grid.Resources>
+                            <SolidColorBrush x:Key="tableTitleBackground" Color="#EEF1F6" />
+                            <Style TargetType="TextBlock">
+                                <Setter Property="VerticalAlignment" Value="Center" />
+                                <Setter Property="Margin" Value="10,0,10,0"/>
+                                <Setter Property="FontWeight" Value="Thin" />
+                            </Style>
+                            <Style TargetType="Border">
+                                <Setter Property="BorderThickness" Value="1"/>
+                                <Setter Property="BorderBrush" Value="#DEE6EC" />
+                                <Setter Property="Background" Value="White" />
+                            </Style>
+                        </Grid.Resources>
+                        <!--<Grid.RowDefinitions>
+                            <RowDefinition Height="*" />
+                            <RowDefinition Height="*" />
+                        </Grid.RowDefinitions>-->
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="*" />
+                            <ColumnDefinition Width="*" />
+                        </Grid.ColumnDefinitions>
+                        <Grid>
+                            <controllers:UserTable DataContext="{Binding  ClusterHealthInfo}" Row0Key="Cluster Health" Row1Key="Status" 
+                                                   Row2Key="Timed Out?" Row3Key="Nodes"
+                                                   Row4Key="Data Nodes" Row5Key="Active Primary Shards"
+                                                   Row6Key="Initializing Shards" Row7Key="Unassigned Shards"
+                                                   Row0Value="" 
+                                                   Row1Value="{Binding Status}" 
+                                                   Row2Value="{Binding TimeOut}" 
+                                                   Row3Value="{Binding Nodes}" 
+                                                   Row4Value="{Binding DataNodes}" 
+                                                   Row5Value="{Binding ActivePrimaryShards}" 
+                                                   Row6Value="{Binding InitializingShards}" 
+                                                   Row7Value="{Binding UnassignedShards}" 
+                                                   />
+                        </Grid>
+                        <Grid Grid.Column="1">
+                            <controllers:UserTable Row0Key="ElasticSearch Stats Info" Row1Key="clusterName" 
+                                                   Row2Key="timestamp" Row3Key="es versions"
+                                                   Row4Key="os" Row5Key="jvm max uptime"
+                                                   Row6Key="jvm versions" Row7Key="jvm threads"
+                                                   Row0Value="" 
+                                                   Row1Value="{Binding ClusterStatsInfo.ClusterName}" 
+                                                   Row2Value="{Binding ClusterStatsInfo.Timestamp}" 
+                                                   Row3Value="{Binding ClusterStatsInfo.Version}" 
+                                                   Row4Value="{Binding ClusterStatsInfo.OS}" 
+                                                   Row5Value="{Binding JvmInfo.UpTime}" 
+                                                   Row6Value="{Binding JvmInfo.Version}"
+                                                   Row7Value="{Binding JvmInfo.Threads}"  />
+                        </Grid>
+
+                        <!--<Grid Grid.Row="1">
+                            <Grid.RowDefinitions>
+                                <RowDefinition Height="40"/>
+                                <RowDefinition Height="*"/>
+                            </Grid.RowDefinitions>
+                            <TextBlock Text="Index Templates中Type个数统计" FontSize="18" FontWeight="Bold" />
+                            <Grid Grid.Row="1" Background="White">
+
+                            </Grid>
+                        </Grid>-->
+                        <!--<Grid Grid.Row="1" Grid.Column="1"> 
+                                <Grid.RowDefinitions>
+                                    <RowDefinition Height="40" />
+                                    <RowDefinition Height="*" />
+                                </Grid.RowDefinitions>
+                                <TextBlock Text="Indices list" FontSize="18" FontWeight="Bold" />
+                                <DataGrid Grid.Row="1" IsReadOnly="True"
+                                          Name="indicesList"
+                                          ItemsSource="{Binding IndexInfos}"
+                                          AutoGenerateColumns="False">
+                                    <DataGrid.RowStyle>
+                                        <Style TargetType="DataGridRow">
+                                            <EventSetter Event="PreviewMouseLeftButtonDown"
+                                                         Handler="DataGridRow_PreviewMouseLeftButtonDown"/>
+                                        </Style>
+                                    </DataGrid.RowStyle>
+                                    <DataGrid.Columns>
+                                        <DataGridTextColumn Binding="{Binding Index}" Width="100">
+                                            <DataGridTextColumn.Header>
+                                                <TextBlock Text="Index" Style="{StaticResource headerStyle}" />
+                                            </DataGridTextColumn.Header>
+                                        </DataGridTextColumn>
+                                        <DataGridTextColumn Binding="{Binding DocsCount}">
+                                            <DataGridTextColumn.Header>
+                                                <TextBlock Text="Docs" Style="{StaticResource headerStyle}" />
+                                            </DataGridTextColumn.Header>
+                                        </DataGridTextColumn>
+                                        <DataGridTextColumn Binding="{Binding StoreSize}">
+                                            <DataGridTextColumn.Header>
+                                                <TextBlock Text="Size" Style="{StaticResource headerStyle}" />
+                                            </DataGridTextColumn.Header>
+                                        </DataGridTextColumn>
+                                    <DataGridTextColumn Binding="{Binding Status}">
+                                        <DataGridTextColumn.Header>
+                                            <TextBlock Text="Status" Style="{StaticResource headerStyle}" />
+                                        </DataGridTextColumn.Header>
+                                    </DataGridTextColumn>
+                                </DataGrid.Columns>
+                                    <DataGrid.RowDetailsTemplate>
+                                        <DataTemplate>
+                                            <Grid  Background="{StaticResource mainTitleBackgrond}">
+                                                <Grid.ColumnDefinitions>
+                                                    <ColumnDefinition Width="100" />
+                                                    <ColumnDefinition Width="*" />
+                                                </Grid.ColumnDefinitions>
+                                                <Grid.RowDefinitions>
+                                                    <RowDefinition Height="*"/>
+                                                    <RowDefinition Height="*"/>
+                                                    <RowDefinition Height="*"/>
+                                                    <RowDefinition Height="*"/>
+                                                    <RowDefinition Height="*"/>
+                                                    <RowDefinition Height="*"/>
+                                                    <RowDefinition Height="*"/>
+                                                    <RowDefinition Height="*"/>
+                                                    <RowDefinition Height="*"/>
+                                                    <RowDefinition Height="*"/>
+                                                </Grid.RowDefinitions>
+
+                                                <TextBlock Style="{StaticResource titleStyle}" Text="索引名称" />
+                                                <TextBlock Grid.Column="1" Text="{Binding Index}" />
+                                                <TextBlock Grid.Row="1" Style="{StaticResource titleStyle}"  Text="文档个数" />
+                                                <TextBlock Grid.Row="1" Grid.Column="1" Style="{StaticResource contentStyle}" Text="{Binding DocsCount}" />
+                                                <TextBlock Grid.Row="2"  Style="{StaticResource titleStyle}"  Text="文档删除个数" />
+                                                <TextBlock Grid.Row="2"   Grid.Column="1" Style="{StaticResource contentStyle}" Text="{Binding DocsDeleted}" />
+                                                <TextBlock Grid.Row="3"  Style="{StaticResource titleStyle}"  Text="STORE SIZE" />
+                                                <TextBlock Grid.Row="3"   Grid.Column="1" Style="{StaticResource contentStyle}" Text="{Binding StoreSize}" />
+                                                <TextBlock Grid.Row="4"  Style="{StaticResource titleStyle}"  Text="主分片大小" />
+                                                <TextBlock Grid.Row="4"   Grid.Column="1" Style="{StaticResource contentStyle}" Text="{Binding PrimaryStoreSize}" />
+                                                <TextBlock Grid.Row="5"  Style="{StaticResource titleStyle}"  Text="分片个数" />
+                                                <TextBlock Grid.Row="5"   Grid.Column="1" Style="{StaticResource contentStyle}" Text="{Binding Primary}" />
+                                                <TextBlock Grid.Row="6"  Style="{StaticResource titleStyle}"  Text="副本个数" />
+                                                <TextBlock Grid.Row="6"   Grid.Column="1" Style="{StaticResource contentStyle}" Text="{Binding Replica}" />
+                                                <TextBlock Grid.Row="7"  Style="{StaticResource titleStyle}"  Text="索引状态" />
+                                                <TextBlock Grid.Row="7"  Grid.Column="1" Style="{StaticResource contentStyle}"  Text="{Binding Status}" />
+                                                <TextBlock Grid.Row="8"  Style="{StaticResource titleStyle}"  Text="健康状态" />
+                                                <TextBlock Grid.Row="8"  Grid.Column="1" Style="{StaticResource contentStyle}"  Text="{Binding Health}" />
+                                                <TextBlock Grid.Row="9"  Style="{StaticResource titleStyle}"  Text="UUID" />
+                                                <TextBlock Grid.Row="9"   Grid.Column="1" Style="{StaticResource contentStyle}" Text="{Binding UUID}" />
+                                            </Grid>
+                                        </DataTemplate>
+                                    </DataGrid.RowDetailsTemplate>
+                                </DataGrid> 
+                        </Grid>-->
+                    </Grid>
+
+                </StackPanel>
+            </Border>
+
+
+        </Grid>
+
+    </ScrollViewer>
+</Page>
