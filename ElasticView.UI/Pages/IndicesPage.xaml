@@ -5,11 +5,16 @@
       xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
       xmlns:local="clr-namespace:ElasticView.UI.Pages"
       xmlns:md="http://materialdesigninxaml.net/winfx/xaml/themes" 
+      xmlns:vm="clr-namespace:ElasticView.UI.Models"
       xmlns:hc="https://handyorg.github.io/handycontrol"
       mc:Ignorable="d" 
       Background="{StaticResource mainBackgrond}"
       d:DesignHeight="768" d:DesignWidth="1024"
+      x:Name="_indicesPage"
       Title="IndicesPage">
+    <Page.DataContext>
+        <vm:IndicesPageViewModel />
+    </Page.DataContext>
     <Grid>
         <Grid.RowDefinitions>
             <RowDefinition Height="40" />
@@ -39,18 +44,14 @@
                     <ColumnDefinition Width="4*" />
                     <ColumnDefinition Width="1*" />
                 </Grid.ColumnDefinitions>
-                <Border Background="{StaticResource mainlightGreen}"
-                        CornerRadius="5" 
-                        Width="100"
-                        Name="CreateBtn"
-                       MouseLeftButtonDown="CreateBtn_MouseLeftButtonDown"
-                        >
-                    <TextBlock Text="新建索引" Foreground="White"  FontSize="16"
-                               VerticalAlignment="Center"
-                               TextAlignment="Center" />
-                </Border>
-                <TextBox Grid.Column="1" 
-                         TextChanged="Keyword_TextChanged" Width="auto"  Name="keyword" 
+                <Button Content="新建索引" 
+                        Background="{StaticResource mainlightGreen}"
+                        Style="{StaticResource ButtonInfo}" 
+                        Command="{Binding CreateIndexWindowCommand}"
+                        />
+                <TextBox Grid.Column="1"
+                         Text="{Binding Keyword,UpdateSourceTrigger=PropertyChanged}"
+                         Width="auto"  
                          Tag="请输入要查询的索引名称"
                          Style="{DynamicResource TextBoxPlacholdStyle}" />
                 <md:PackIcon Kind="Search" Width="40" Height="30"
@@ -60,67 +61,48 @@
                                          Foreground="{StaticResource fontGray}" 
                                          
                                          />
-                <CheckBox Grid.Column="2" Content="显示隐藏索引" HorizontalAlignment="Center"
+                <CheckBox Grid.Column="2" 
+                          Content="显示隐藏索引"
+                          IsChecked="{Binding ShowAll}"
+                          HorizontalAlignment="Center"
                           FontSize="16" Foreground="{StaticResource mainlightGreen}"
-                          VerticalAlignment="Center"
-                          Name="ShowAll"
-                          Checked="ShowAll_Checked"
-                          Unchecked="ShowAll_Unchecked"
+                          VerticalAlignment="Center"  
                           />
             </Grid>
 
-
-            <!--#region 按钮 -->
-            <!--<Grid>
-                <Grid.ColumnDefinitions>
-                    <ColumnDefinition Width="*" />
-                    -->
-            <!--<ColumnDefinition Width="80" />-->
-            <!--
-                    <ColumnDefinition Width="80" />
-                </Grid.ColumnDefinitions>
-                
-                <TextBox Width="auto"  Name="keyword" 
-                         Tag="请输入要查询的索引名称"
-                         Style="{DynamicResource TextBoxPlacholdStyle}" />
-
- 
-                -->
-            <!--<Border Grid.Column="1" BorderBrush="{StaticResource borderColor}" 
-                        BorderThickness="1" Background="{StaticResource mainlightGreen}"
-                        CornerRadius="5"
-                        MouseLeftButtonUp="Border_MouseLeftButtonUp"
-                        >
-                    <StackPanel Orientation="Horizontal" HorizontalAlignment="Center">
-                        <md:PackIcon Kind="Search" VerticalAlignment="Center" Foreground="White" Width="20" Height="40" />
-                        <Label Content="搜索" VerticalAlignment="Center" FontSize="14" Foreground="White"  />
-                    </StackPanel>
-                </Border>-->
-            <!-- 
-            </Grid>-->
-            <!--#endregion-->
-
-            <DataGrid Grid.Row="1" IsReadOnly="True" AutoGenerateColumns="False"
-                      HorizontalGridLinesBrush="#DEE6EC" VerticalGridLinesBrush="#DEE6EC"
+            <DataGrid Grid.Row="1" IsReadOnly="True"
+                      AutoGenerateColumns="False"
+                      HorizontalGridLinesBrush="#DEE6EC"
+                      VerticalGridLinesBrush="#DEE6EC"
                       ScrollViewer.VerticalScrollBarVisibility="Auto"
                       ScrollViewer.HorizontalScrollBarVisibility="Auto"
                       HeadersVisibility="Column"
-                      x:Name="indexGrid"
+                      ItemsSource="{Binding FilteredData}"
                       ColumnWidth="*"
+                      x:Name="IndicesDataGrid"
                       >
                 <DataGrid.Resources>
+                    <Style TargetType="DataGridCell">
+                        <Style.Triggers>
+                            <Trigger Property="IsSelected" Value="True">
+                                <Setter Property="Foreground" Value="Black" />
+                                <Setter Property="BorderThickness" Value="0" />
+                                <Setter Property="Background" Value="Transparent" />
+                            </Trigger>
+                        </Style.Triggers>
+                    </Style>
                     <local:IndexPageHealthForegroundConverter x:Key="IndexPageHealthForegroundConverter" />
                     <local:IndexPageHealthTextConverter x:Key="IndexPageHealthTextConverter" />
                     <local:IndexPageOpenButtonVisibilityConverter x:Key="IndexPageOpenButtonVisibilityConverter" />
                     <local:IndexPageCloseButtonVisibilityConverter x:Key="IndexPageCloseButtonVisibilityConverter" />
                 </DataGrid.Resources>
-                <DataGrid.RowStyle>
+                <!--<DataGrid.RowStyle>
                     <Style TargetType="DataGridRow">
                         <EventSetter Event="PreviewMouseLeftButtonDown" 
                                      Handler="DataGridRow_PreviewMouseLeftButtonDown"
                                      />
                     </Style>
-                </DataGrid.RowStyle>
+                </DataGrid.RowStyle>-->
                 <DataGrid.Columns>
                     <DataGridTextColumn Binding="{Binding Index}">
                         <DataGridTextColumn.Header>
@@ -202,16 +184,6 @@
                             <TextBlock Text="Size"   Style="{StaticResource headerStyle}"  />
                         </DataGridTextColumn.Header>
                     </DataGridTextColumn>
-                    <!--<DataGridTextColumn  Binding="{Binding PrimaryStoreSize}">
-                        <DataGridTextColumn.Header>
-                            <TextBlock Text="主分片大小"    Style="{StaticResource headerStyle}" />
-                        </DataGridTextColumn.Header>
-                    </DataGridTextColumn>-->
-                    <!--<DataGridTextColumn  Binding="{Binding StoreSize}">
-                        <DataGridTextColumn.Header>
-                            <TextBlock Text="Status"   Style="{StaticResource headerStyle}"  />
-                        </DataGridTextColumn.Header>
-                    </DataGridTextColumn>-->
                     <DataGridTextColumn  Binding="{Binding UUID}">
                         <DataGridTextColumn.Header>
                             <TextBlock Text="UUID"   Style="{StaticResource headerStyle}"  />
@@ -223,18 +195,16 @@
                         </DataGridTemplateColumn.Header>
                         <DataGridTemplateColumn.CellTemplate>
                             <DataTemplate>
-                                <!--<StackPanel Orientation="Horizontal">-->
                                 <md:PopupBox >
                                     <Grid>
                                         <Grid.Resources>
                                             <Style TargetType="md:PackIcon">
-                                                <Setter Property="VerticalAlignment" Value="Center" />
-                                                <Setter Property="HorizontalAlignment" Value="Center" />
-                                                <Setter Property="Foreground" Value="{StaticResource mainlightGreen}" />
+                                                <Setter Property="Margin" Value="5,0,10,0"/>
                                             </Style>
-                                            <Style TargetType="Button">
-                                                <Setter Property="HorizontalContentAlignment" Value="Left" />
+                                            <Style TargetType="TextBlock">
+                                                <Setter Property="Margin" Value="10,0,5,0" />
                                             </Style>
+
                                         </Grid.Resources>
                                         <Grid.RowDefinitions>
                                             <RowDefinition Height="Auto" />
@@ -248,110 +218,185 @@
                                             <RowDefinition Height="Auto" />
                                             <RowDefinition Height="Auto" />
                                         </Grid.RowDefinitions>
-                                        <Grid.ColumnDefinitions>
-                                            <ColumnDefinition Width="40" />
-                                            <ColumnDefinition Width="Auto" />
-                                        </Grid.ColumnDefinitions>
-
-                                        <md:PackIcon  Kind="Info" />
-                                        <Button Grid.Column="1" Style="{StaticResource MaterialDesignFlatButton}"
-                                                    Name="InfoBtn"
-                                                    Click="InfoBtn_Click"
-                                                    Tag="{Binding Index}" Content="查看信息" />
-
-
-                                        <md:PackIcon Grid.Row="1"  Kind="ChartLine"  />
-                                        <Button Grid.Row="1" Grid.Column="1" Style="{StaticResource MaterialDesignFlatButton}"
-                                                    Name="StatsBtn"
-                                                Click="StatsBtn_Click"
-                                                    Tag="{Binding Index}" Content="查看状态" />
-
-                                        <Border Grid.Row="2" BorderBrush="{StaticResource borderColor}" BorderThickness="0,1,0,1">
-                                            <md:PackIcon   Kind="At"  />
-                                        </Border>
-                                        <Border Grid.Row="2" Grid.Column="1" BorderBrush="{StaticResource borderColor}" BorderThickness="0,1,0,1">
-                                            <Button  Style="{StaticResource MaterialDesignFlatButton}"
-                                                    Name="AliasBtn"
-                                                    Tag="{Binding Index}" Content="别名" />
-                                        </Border>
-
-                                        <md:PackIcon  Grid.Row="3" Kind="CallMerge"  />
-                                        <Button Grid.Row="3" Grid.Column="1" Style="{StaticResource MaterialDesignFlatButton}"
-                                                    Name="MergeBtn"
-                                                    Tag="{Binding Index}" Content="强制合并索引" />
-
-                                        <md:PackIcon  Grid.Row="4" Kind="Refresh"  />
-                                        <Button Grid.Row="4" Grid.Column="1" Style="{StaticResource MaterialDesignFlatButton}"
-                                                    Name="RefreshBtn"
-                                                    Tag="{Binding Index}" Content="刷新索引" />
-
-                                        <md:PackIcon  Grid.Row="5"  Kind="InboxArrowDown"  />
-                                        <Button  Grid.Row="5" Grid.Column="1" Style="{StaticResource MaterialDesignFlatButton}"
-                                                    Name="FlushBtn"
-                                                    Tag="{Binding Index}" Content="Flush索引" />
-
-                                        <md:PackIcon  Grid.Row="6" Kind="NotificationClearAll"  />
-                                        <Button Grid.Row="6" Grid.Column="1" Style="{StaticResource MaterialDesignFlatButton}"
-                                                    Name="ClearBtn"
-                                                    Tag="{Binding Index}" Content="清除索引缓存" />
-
-                                        <Grid    Grid.Row="7"
-                                              Visibility="{Binding Status, 
-                                            Converter={StaticResource IndexPageCloseButtonVisibilityConverter}}">
-                                            <md:PackIcon    Kind="Lock"  />
-
+                                        <Grid Grid.Row="0">
+                                            <Button Style="{StaticResource ButtonDashed}"
+                                                BorderThickness="0"
+                                                Cursor="Hand"
+                                                    HorizontalAlignment="Left"
+                                                    Command="{Binding DataContext.QueryIndiceInfoCommand, ElementName=_indicesPage}"
+                                                    CommandParameter="{Binding Index}"
+                                                >
+                                                <StackPanel Orientation="Horizontal">
+                                                    <md:PackIcon Kind="Info" />
+                                                    <TextBlock Text="查看信息" />
+                                                </StackPanel>
+                                            </Button>
                                         </Grid>
-                                        <Grid Grid.Row="7" Grid.Column="1"
-                                               Visibility="{Binding Status, 
-                                            Converter={StaticResource IndexPageCloseButtonVisibilityConverter}}">
-
-                                            <Button    Style="{StaticResource MaterialDesignFlatButton}"
-                                                    Name="CloseBtn"
-                                                    Click="CloseBtn_Click"
-                                                    Tag="{Binding Index}" Content="关闭索引" />
+                                        <Grid Grid.Row="1">
+                                            <Button Style="{StaticResource ButtonDashed}"
+                                                BorderThickness="0"
+                                                Cursor="Hand"
+                                                    HorizontalAlignment="Left"
+                                                    Command="{Binding DataContext.QueryIndiceStatsCommand, ElementName=_indicesPage}"
+                                                    CommandParameter="{Binding Index}"
+                                                >
+                                                <StackPanel Orientation="Horizontal">
+                                                    <md:PackIcon Kind="ChartLine" />
+                                                    <TextBlock Text="查看状态" />
+                                                </StackPanel>
+                                            </Button>
                                         </Grid>
-                                        <Grid Grid.Row="8"  Visibility="{Binding Status, 
-                                            Converter={StaticResource IndexPageOpenButtonVisibilityConverter}}">
-                                            <md:PackIcon    Kind="LockOpen"  />
+                                        <Grid Grid.Row="2"
+                                              Visibility="{Binding Status,
+                                            Converter={StaticResource IndexPageCloseButtonVisibilityConverter}}"
+                                              >
+                                            <Button Style="{StaticResource ButtonDashed}"
+                                                BorderThickness="0"
+                                                Cursor="Hand"
+                                                    HorizontalAlignment="Left"
+                                                >
+                                                <StackPanel Orientation="Horizontal">
+                                                    <md:PackIcon Kind="At" />
+                                                    <TextBlock Text="别名" />
+                                                </StackPanel>
+                                            </Button>
                                         </Grid>
-                                        <Grid Grid.Row="8" Grid.Column="1"  Visibility="{Binding Status, 
-                                            Converter={StaticResource IndexPageOpenButtonVisibilityConverter}}">
-                                            <Button  Style="{StaticResource MaterialDesignFlatButton}"
-                                                     Name="OpenBtn"
-                                                Click="OpenBtn_Click"
-                                                    Tag="{Binding Index}" Content="打开索引" />
-                                        </Grid> 
-                                        <md:PackIcon Grid.Row="9"  Kind="Delete"  />
-                                        <Button Grid.Column="1" Grid.Row="9" Style="{StaticResource MaterialDesignFlatButton}"
-                                                    Name="DeleteBtn"
-                                                Click="DeleteBtn_Click"
-                                                    Tag="{Binding Index}" Content="删除" />
-
+                                        <Grid Grid.Row="3"
+                                              Visibility="{Binding Status,
+                                            Converter={StaticResource IndexPageCloseButtonVisibilityConverter}}"
+                                              >
+                                            <Button Style="{StaticResource ButtonDashed}"
+                                                BorderThickness="0"
+                                                Cursor="Hand"
+                                                    HorizontalAlignment="Left"
+                                                    Command="{Binding DataContext.ForceMergeCommand, ElementName=_indicesPage}"
+                                                    CommandParameter="{Binding Index}"
+                                                >
+                                                <StackPanel Orientation="Horizontal">
+                                                    <md:PackIcon Kind="CallMerge" />
+                                                    <TextBlock Text="强制合并索引" />
+                                                </StackPanel>
+                                            </Button>
+                                        </Grid>
+                                        <Grid Grid.Row="4"
+                                              Visibility="{Binding Status,
+                                            Converter={StaticResource IndexPageCloseButtonVisibilityConverter}}"
+                                              >
+                                            <Button Style="{StaticResource ButtonDashed}"
+                                                BorderThickness="0"
+                                                Cursor="Hand"
+                                                    HorizontalAlignment="Left"
+                                                    Command="{Binding DataContext.RefreshCommand, ElementName=_indicesPage}"
+                                                    CommandParameter="{Binding Index}"
+                                                >
+                                                <StackPanel Orientation="Horizontal">
+                                                    <md:PackIcon Kind="Refresh" />
+                                                    <TextBlock Text="刷新索引" />
+                                                </StackPanel>
+                                            </Button>
+                                        </Grid>
+                                        <Grid Grid.Row="5"
+                                              Visibility="{Binding Status,
+                                            Converter={StaticResource IndexPageCloseButtonVisibilityConverter}}"
+                                              >
+                                            <Button Style="{StaticResource ButtonDashed}"
+                                                BorderThickness="0"
+                                                Cursor="Hand"
+                                                    HorizontalAlignment="Left"
+                                                    Command="{Binding DataContext.FlushCommand, ElementName=_indicesPage}"
+                                                    CommandParameter="{Binding Index}"
+                                                >
+                                                <StackPanel Orientation="Horizontal">
+                                                    <md:PackIcon Kind="InboxArrowDown" />
+                                                    <TextBlock Text="Flush索引" />
+                                                </StackPanel>
+                                            </Button>
+                                        </Grid>
+                                        <Grid Grid.Row="6"
+                                              Visibility="{Binding Status,
+                                            Converter={StaticResource IndexPageCloseButtonVisibilityConverter}}"
+                                              >
+                                            <Button Style="{StaticResource ButtonDashed}"
+                                                BorderThickness="0"
+                                                Cursor="Hand"
+                                                    HorizontalAlignment="Left"
+                                                    Command="{Binding DataContext.ClearCommand, ElementName=_indicesPage}"
+                                                    CommandParameter="{Binding Index}"
+                                                >
+                                                <StackPanel Orientation="Horizontal">
+                                                    <md:PackIcon Kind="NotificationClearAll" />
+                                                    <TextBlock Text="清除索引缓存" />
+                                                </StackPanel>
+                                            </Button>
+                                        </Grid>
+                                        <Grid Grid.Row="7"
+                                              Visibility="{Binding Status,
+                                            Converter={StaticResource IndexPageCloseButtonVisibilityConverter}}"
+                                              >
+                                            <Button Style="{StaticResource ButtonDashed}"
+                                                BorderThickness="0"
+                                                Cursor="Hand"
+                                                    HorizontalAlignment="Left"
+                                                    Command="{Binding DataContext.CloseCommand, ElementName=_indicesPage}"
+                                                    CommandParameter="{Binding Index}"
+                                                >
+                                                <StackPanel Orientation="Horizontal">
+                                                    <md:PackIcon Kind="Lock" />
+                                                    <TextBlock Text="关闭索引" />
+                                                </StackPanel>
+                                            </Button>
+                                        </Grid>
+                                        <Grid Grid.Row="8"
+                                              Visibility="{Binding Status,
+                                            Converter={StaticResource IndexPageOpenButtonVisibilityConverter}}"
+                                              >
+                                            <Button Style="{StaticResource ButtonDashed}"
+                                                BorderThickness="0"
+                                                Cursor="Hand"
+                                                    HorizontalAlignment="Left"
+                                                    Command="{Binding DataContext.OpenCommand, ElementName=_indicesPage}"
+                                                    CommandParameter="{Binding Index}"
+                                                >
+                                                <StackPanel Orientation="Horizontal">
+                                                    <md:PackIcon Kind="LockOpen" />
+                                                    <TextBlock Text="打开索引" />
+                                                </StackPanel>
+                                            </Button>
+                                        </Grid>
+                                        <Grid Grid.Row="9">
+                                            <Button Style="{StaticResource ButtonDashed}"
+                                                BorderThickness="0"
+                                                Cursor="Hand"
+                                                    HorizontalAlignment="Left"
+                                                    Command="{Binding DataContext.DeleteCommand, ElementName=_indicesPage}"
+                                                    CommandParameter="{Binding Index}"
+                                                >
+                                                <StackPanel Orientation="Horizontal">
+                                                    <md:PackIcon Kind="Delete" />
+                                                    <TextBlock Text="删除" />
+                                                </StackPanel>
+                                            </Button>
+                                        </Grid>
                                     </Grid>
-
                                 </md:PopupBox>
-                                <!--<Button Style="{StaticResource MaterialDesignFlatButton}" 
-                                            >
-                                        <md:PackIcon Kind="Settings"
-                                                             VerticalAlignment="Center"
-                                                             HorizontalAlignment="Center"
-                                                             Foreground="{StaticResource mainlightGreen}"
-                                                                 
-                                                             />
-                                    </Button>-->
-                                <!--<Button Style="{StaticResource MaterialDesignFlatButton}">
-                                        <md:PackIcon Kind="Delete"
-                                                                 Foreground="{StaticResource mainRed}"
-                                                                 />
-                                    </Button>-->
-
-                                <!--</StackPanel>-->
                             </DataTemplate>
                         </DataGridTemplateColumn.CellTemplate>
                     </DataGridTemplateColumn>
                 </DataGrid.Columns>
             </DataGrid>
-            <Grid Grid.Row="2"> 
+            <Grid Grid.Row="2">
+                <hc:Pagination MaxPageCount="{Binding TotalPages}"
+                               PageIndex="{Binding PageIndex}"
+                               IsJumpEnabled="True">
+                    <hc:Interaction.Triggers>
+                        <hc:EventTrigger EventName="PageUpdated">
+                            <hc:EventToCommand Command="{Binding PageUpdatedCommand}"
+                                               PassEventArgsToCommand="True"
+                                               />
+                            <!--<hc:EventToCommand ="{bind}" />-->
+                        </hc:EventTrigger>
+                    </hc:Interaction.Triggers>
+                </hc:Pagination>
             </Grid>
         </Grid>
     </Grid>

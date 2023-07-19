@@ -45,11 +45,11 @@ namespace ElasticView.UI.Models
         [ObservableProperty]
         private bool indicesSelected;
 
-        [ObservableProperty]
-        private bool shardsSelected;
+        //[ObservableProperty]
+        //private bool shardsSelected;
 
-        [ObservableProperty]
-        private bool searchSelected;
+        //[ObservableProperty]
+        //private bool searchSelected;
 
         //[RelayCommand(CanExecute = nameof(ButtonCanClick))]
         //private void ButtonClick()
@@ -118,8 +118,8 @@ namespace ElasticView.UI.Models
             this.DashSelected = 0 == CurrentPageIndex;
             this.NodesSelected = 1 == CurrentPageIndex;
             this.IndicesSelected = 2 == CurrentPageIndex;
-            this.ShardsSelected = 3 == CurrentPageIndex;
-            this.SearchSelected = 4 == CurrentPageIndex;
+            //this.ShardsSelected = 3 == CurrentPageIndex;
+            //this.SearchSelected = 4 == CurrentPageIndex;
         }
 
         private void SwitchPage(int index)

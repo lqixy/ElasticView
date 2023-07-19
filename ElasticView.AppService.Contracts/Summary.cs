@@ -1,4 +1,6 @@
-﻿namespace ElasticView.AppService.Contracts
+﻿using Newtonsoft.Json;
+
+namespace ElasticView.AppService.Contracts
 {
     public class Summary
     {
@@ -105,18 +107,44 @@
             Health = health;
         }
 
-        public string UUID { get; }
-        public string Primary { get; }
-        public string PrimaryStoreSize { get; }
-        public string Replica { get; }
-        public string Index { get; }
-        public string DocsCount { get; }
-        public string DocsDeleted { get; }
-        public string StoreSize { get; }
-        public string Health { get; set; }
-        public string Status { get; }
+        [JsonProperty("uuid")]
+        public string UUID { get;  set; } = string.Empty;
+
+        [JsonProperty("pri")]
+        public string Primary { get;  set; } = string.Empty;
+
+        [JsonProperty("pri.store.size")]
+        public string PrimaryStoreSize { get;  set; } = string.Empty;
+
+        [JsonProperty("rep")]
+        public string Replica { get;  set; } = string.Empty;
+
+        [JsonProperty("index")]
+        public string Index { get;  set; } = string.Empty;
+
+        [JsonProperty("docs.count")]
+        public string DocsCount { get;  set; } = string.Empty;
+
+        [JsonProperty("docs.deleted")]
+        public string DocsDeleted { get;  set; } = string.Empty;
+
+        [JsonProperty("store.size")]
+        public string StoreSize { get;  set; } = string.Empty;
+
+        [JsonProperty("health")]
+        public string Health { get; set; } = string.Empty;
+
+        [JsonProperty("status")]
+        public string Status { get;  set; } = string.Empty;
 
         public string[] Aliases { get; set; } = new string[0];
+
+
+        public void UpdateAliases(string[] aliases)
+        {
+            this.Aliases = aliases;
+        }
+
     }
 
     public class ClusterInfo
@@ -256,11 +284,11 @@
             FreeInBytes = freeInBytes;
         }
 
-        public long TotalInBytes { get; }
+        public long TotalInBytes { get;  set; }
 
         public long UsedInBytes => TotalInBytes - FreeInBytes;
 
-        public long FreeInBytes { get; }
+        public long FreeInBytes { get;  set; }
     }
 
     //public class OSSystemInfo
@@ -298,11 +326,11 @@
             FreePercent = freePercent;
         }
 
-        public long TotalBytes { get; }
-        public long FreeBytes { get; }
+        public long TotalBytes { get;  set; }
+        public long FreeBytes { get;  set; }
 
-        public int UsedPercent { get; }
-        public int FreePercent { get; }
+        public int UsedPercent { get;  set; }
+        public int FreePercent { get;  set; }
     }
 
     public class JvmInfo
@@ -357,12 +385,12 @@
             UptimeInMilliseconds = uptimeInMilliseconds;
         }
 
-        public long HeapMaxInBytes { get; }
-        public string HeapMax { get; }
-        public long HeapUsedInBytes { get; }
-        public string HeapUsed { get; }
-        public long HeapUsedPercent { get; }
-        public long UptimeInMilliseconds { get; }
+        public long HeapMaxInBytes { get;  set; }
+        public string HeapMax { get;  set; }
+        public long HeapUsedInBytes { get;  set; }
+        public string HeapUsed { get;  set; }
+        public long HeapUsedPercent { get;  set; }
+        public long UptimeInMilliseconds { get;  set; }
     }
 
 }

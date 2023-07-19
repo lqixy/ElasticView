@@ -59,8 +59,10 @@
                     <ColumnDefinition Width="1*" />
                 </Grid.ColumnDefinitions>
                 <StackPanel Orientation="Horizontal">
-                    <md:PackIcon Kind="ChartBar" Margin="15,0,0,0" Foreground="{StaticResource mainlightGreen}" Width="20" Height="40" />
-                    <TextBlock Text="Overview【集群概要】" Margin="10,0,0,0" Foreground="{StaticResource mainlightGreen}" FontSize="16" VerticalAlignment="Center" />
+                    <md:PackIcon Kind="ChartBar" Margin="15,0,0,0" 
+                                 Foreground="{StaticResource mainlightGreen}" Width="20" Height="40" />
+                    <TextBlock Text="Overview【集群概要】" Margin="10,0,0,0" 
+                               Foreground="{StaticResource mainlightGreen}" FontSize="16" VerticalAlignment="Center" />
                 </StackPanel>
             </Grid>
             <Border Grid.Row="1" BorderThickness="2" BorderBrush="{StaticResource borderColor}">

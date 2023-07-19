@@ -42,7 +42,7 @@
                 Background="Transparent"
       IsChecked="False"
       Style="{StaticResource MaterialDesignActionLightToggleButton}"
-      ToolTip="MaterialDesignActionLightToggleButton" >
+      ToolTip="复制内容" >
                 
             </ToggleButton>
             <!--<Button Grid.Column="1" 

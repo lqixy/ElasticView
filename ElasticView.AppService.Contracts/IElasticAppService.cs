@@ -9,7 +9,7 @@ namespace ElasticView.AppService.Contracts
 {
     public interface IElasticAppService
     {
-        Task<Summary> GetHealth(string url);
+        //Task<Summary> GetHealth(string url);
         Task<StatusEnum> GetStatus(string url);
         Task<IEnumerable<IndexInfoDto>> GetIndexInfos(string url, bool all = false);
         Task<IndicesInfo> GetIndices(string url);

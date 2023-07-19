@@ -10,18 +10,166 @@
       xmlns:hc="https://handyorg.github.io/handycontrol"
       mc:Ignorable="d" 
       d:DesignHeight="768" d:DesignWidth="1024"
-      Title="QueryPage">    
+      Title="QueryPage">
     <Page.DataContext>
         <vm:QueryPageViewModel />
     </Page.DataContext>
 
-    <StackPanel>
-        <hc:PasswordBox Name="testPwd" IsSafeEnabled="False" />
-        <hc:TextBox Visibility="Collapsed" Name="pwdStr" Text="{Binding UnsafePassword, 
-            ElementName=testPwd, UpdateSourceTrigger=PropertyChanged}" />
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="40" />
+            <RowDefinition Height="60" />
+            <!--<RowDefinition Height="30" />-->
+            <RowDefinition Height="auto" />
+            <RowDefinition Height="*" />
+        </Grid.RowDefinitions>
+        <Grid Grid.Row="0" Background="{StaticResource mainTitleBackgrond}">
 
-        <TextBlock Text="{Binding Pwd}" />
-        <Button Content="click" Command="{Binding UpdatePwdCommand}" CommandParameter="{Binding ElementName=pwdStr, Path=Text}" />
-    </StackPanel>
-    
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="9*" />
+                <ColumnDefinition Width="1*" />
+            </Grid.ColumnDefinitions>
+            <StackPanel Orientation="Horizontal">
+                <md:PackIcon Kind="Search" Margin="15,0,0,0" Foreground="{StaticResource mainlightGreen}" Width="20" Height="40" />
+                <TextBlock Text="搜索" Margin="10,0,0,0" Foreground="{StaticResource mainlightGreen}" FontSize="16" VerticalAlignment="Center" />
+            </StackPanel>
+        </Grid>
+        <Grid Grid.Row="1" Background="{StaticResource mainBackgrond}" >
+            <Grid.RowDefinitions>
+                <RowDefinition Height="60"/>
+                <RowDefinition Height="20"/>
+                <RowDefinition Height="*"/>
+                <RowDefinition Height="*"/>
+            </Grid.RowDefinitions>
+            <Grid>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="2*" />
+                    <ColumnDefinition Width="4*" />
+                    <ColumnDefinition Width="*" />
+                </Grid.ColumnDefinitions>
+                <!--<hc:TextBox hc:InfoElement.ShowClearButton="True" />-->
+                <hc:ComboBox
+                    ItemsSource="{Binding IndexNames}"
+                    SelectedItem="{Binding CurSelectedItem}"
+                    hc:InfoElement.ShowClearButton="True" Height="40" />
+                <hc:TextBox Grid.Column="1" hc:InfoElement.ShowClearButton="True" Height="40" Margin="10,0,10,0" />
+                <Button Grid.Column="2"
+                        Command="{Binding SearchDocumentCommand}"
+                        Content="搜索" Height="40" Style="{StaticResource ButtonPrimary}" />
+            </Grid>
+        </Grid>
+        <!--<Grid Grid.Row="2" >
+            -->
+        <!--<Label Content="如需帮助,可查询官方文档."/>-->
+        <!--
+            
+            <TextBlock VerticalAlignment="Center">
+        <Hyperlink NavigateUri="https://www.elastic.co/guide/en/elasticsearch/reference/current/query-dsl-query-string-query.html"  >查询 DSL</Hyperlink>
+            </TextBlock>
+        </Grid>-->
+
+        <Grid Grid.Row="2" Background="{StaticResource mainBackgrond}" >
+            <Expander ExpandDirection="Up">
+                <Expander.Header>
+                    <Label HorizontalAlignment="Center" Content="自定义搜索" />
+                </Expander.Header>
+                <!--<Border Height="360" 
+                        BorderThickness="1,0,1,1"
+                        BorderBrush="{DynamicResource BorderBrush}" 
+                        Background="{DynamicResource RegionBrush}" 
+                        CornerRadius="0,0,4,4" />-->
+                <Grid>
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="30" />
+                        <RowDefinition Height="*" />
+                    </Grid.RowDefinitions>
+                    <Grid>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="8*" />
+                            <ColumnDefinition Width="1*" />
+                        </Grid.ColumnDefinitions>
+
+                        <ToggleButton
+                            Grid.Column="1"
+                            VerticalAlignment="Center"
+      Content="{md:PackIcon Kind=ContentCopy}"
+                Foreground="Gray"
+                Background="Transparent"
+      IsChecked="False"
+      Style="{StaticResource MaterialDesignActionLightToggleButton}"
+      ToolTip="复制内容" >
+                        </ToggleButton>
+                    </Grid>
+                    <Border  Grid.Row="1"
+                        Margin="20,0,20,0"
+                        BorderBrush="{StaticResource borderColor}"
+                        BorderThickness="1"
+                        CornerRadius="5"
+                >
+                        <RichTextBox   Height="360" 
+                             ScrollViewer.VerticalScrollBarVisibility="Auto">
+                            <RichTextBox.Document>
+                                <FlowDocument Focusable="True" LineHeight="1">
+                                </FlowDocument>
+                            </RichTextBox.Document>
+                        </RichTextBox>
+                    </Border>
+                </Grid>
+            </Expander>
+        </Grid>
+        <Grid Grid.Row="3" >
+            <Grid.RowDefinitions>
+                <RowDefinition Height="auto" />
+                <RowDefinition Height="*" />
+            </Grid.RowDefinitions>
+            <Grid Grid.Row="0">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*" />
+                    <ColumnDefinition Width="*" />
+                    <ColumnDefinition Width="*" />
+                </Grid.ColumnDefinitions>
+
+                <hc:TextBox Grid.Column="1" 
+                            hc:InfoElement.ShowClearButton="True"
+                            Height="40" 
+                            hc:InfoElement.Placeholder="过滤当前文档"
+                            />
+                <hc:CheckComboBox 
+                    Grid.Column="2"
+                    hc:InfoElement.Placeholder="过滤显示的header"
+                    hc:InfoElement.ShowClearButton="True"
+                              MaxWidth="200" 
+                    
+                              ShowSelectAllButton="True"
+                              >
+                </hc:CheckComboBox>
+
+            </Grid>
+            <DataGrid Margin="20,10,20,10" Grid.Row="1"
+                x:Name="SourcesDataGrid"
+                      HeadersVisibility="Column"
+                      ColumnWidth="*"
+                ItemsSource="{Binding SourcesData}" 
+                      >
+                <DataGrid.Resources>
+                    <!--<Style TargetType="DataGridColumnHeader">
+                        <Setter Property="FontSize" Value="12" />
+                        <Setter Property="FontWeight" Value="Bold" />
+                    </Style>-->
+                    <Style TargetType="DataGridCell">
+                        <Setter Property="Height" Value="30" />
+                        <Style.Triggers>
+                            <Trigger Property="IsSelected" Value="True">
+                                <Setter Property="Foreground" Value="Black" />
+                                <Setter Property="BorderThickness" Value="0" />
+                                <Setter Property="Background" Value="Transparent" />
+                            </Trigger>
+                        </Style.Triggers>
+                    </Style>
+                </DataGrid.Resources>
+            </DataGrid>
+        </Grid>
+
+    </Grid>
+
 </Page>

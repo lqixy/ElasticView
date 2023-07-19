@@ -1,21 +1,7 @@
-﻿using AutoMapper;
-using ElasticView.AppService.Contracts;
-using ElasticView.UI.Models;
-using Microsoft.Extensions.DependencyInjection;
+﻿using ElasticView.UI.Models;
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
-using System.Windows.Input;
-using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Navigation;
-using System.Windows.Shapes;
 
 namespace ElasticView.UI.Pages
 {
@@ -39,19 +25,17 @@ namespace ElasticView.UI.Pages
 
         private void InitData()
         {
-            //this.DataContext = new DashPageViewModel();
             this.DataContext = new QueryPageViewModel();
 
-            //this.Loaded += QueryPage_Loaded;
+            this.Loaded += QueryPage_Loaded;
         }
 
 
         private async void QueryPage_Loaded(object sender, RoutedEventArgs e)
         {
-            if (this.DataContext is IndicesPageViewModel viewModel)
+            if (this.DataContext is QueryPageViewModel viewModel)
             {
-                //await viewModel.InitAsync(_url, serviceProvider);
-                await viewModel.InitAsync();
+                await viewModel.InitAsync(_url, serviceProvider);
             }
         }
 

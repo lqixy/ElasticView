@@ -24,16 +24,31 @@ namespace ElasticView.AppService
 
         public async Task<IEnumerable<IndexAliasOutput>> GetAliases(string url)
         {
-            var client = GetClient(url);
-            var response = await client.Cat.AliasesAsync();
-            if (!response.IsValid) return Enumerable.Empty<IndexAliasOutput>();
+            url = $"{url}/_cat/aliases?format=json";
 
-            var result = response.Records.GroupBy(x => x.Index)
+            var records = await _apiContext.GetAsync<IEnumerable<CatAliasesRecordOutput>>(url);
+
+            if (records is null || !records.Any()) return Enumerable.Empty<IndexAliasOutput>();
+
+            var result = records.GroupBy(x => x.Index)
                   .ToDictionary(k => k.Key, v => v.Select(vv => vv.Alias).ToArray())
                   .Select(x => new IndexAliasOutput(x.Key, x.Value))
                   ;
             return result;
         }
+
+        //public async Task<IEnumerable<IndexAliasOutput>> GetAliases(string url)
+        //{
+        //    var client = GetClient(url);
+        //    var response = await client.Cat.AliasesAsync();
+        //    if (!response.IsValid) return Enumerable.Empty<IndexAliasOutput>();
+
+        //    var result = response.Records.GroupBy(x => x.Index)
+        //          .ToDictionary(k => k.Key, v => v.Select(vv => vv.Alias).ToArray())
+        //          .Select(x => new IndexAliasOutput(x.Key, x.Value))
+        //          ;
+        //    return result;
+        //}
 
         public async Task<IEnumerable<CatNodesOutput>> GetNodes(string url)
         {
@@ -41,7 +56,7 @@ namespace ElasticView.AppService
             {
                 var queryString = "ip,name,heap.percent,heap.current,heap.max,ram.percent,ram.current,ram.max,node.role,master,cpu,load_1m,load_5m,load_15m,disk.used_percent,disk.used,disk.total,port";
 
-                  url = $"{url}/_cat/nodes?format=json&h={queryString}";
+                url = $"{url}/_cat/nodes?format=json&h={queryString}";
                 var res = await _apiContext.GetAsync<IEnumerable<CatNodesOutput>>(url);
                 return res;
             }
@@ -63,11 +78,11 @@ namespace ElasticView.AppService
         }
 
 
-        private ElasticClient GetClient(string url)
-        {
-            return new ElasticClient(new Uri(url));
+        //private ElasticClient GetClient(string url)
+        //{
+        //    return new ElasticClient(new Uri(url));
 
-        }
+        //}
         //private ElasticClient GetClient(string url)
         //{
         //    var settings = new ConnectionSettings(new Uri(input.Url))

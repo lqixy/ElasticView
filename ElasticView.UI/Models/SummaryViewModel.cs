@@ -1,15 +1,18 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Security.Policy;
 using System.Text;
 using System.Threading.Tasks;
 using CommunityToolkit.Mvvm.ComponentModel;
+using CommunityToolkit.Mvvm.Input;
+using ElasticView.AppService.Contracts;
 
 namespace ElasticView.UI.Models
 {
 
 
-    public class SummaryViewModel : ObservableObject
+    public class SummaryViewModel
     {
         public SummaryViewModel()
         {
@@ -76,42 +79,44 @@ namespace ElasticView.UI.Models
 
     public class IndexInfoViewModel
     {
-        public IndexInfoViewModel()
-        {
-        }
-        /// <summary>
-        /// 
-        /// </summary>
-        /// <param name="uUID"></param>
-        /// <param name="primary">主分片数</param>
-        /// <param name="primaryStoreSize">主分片大小</param>
-        /// <param name="replica">副本数</param>
-        /// <param name="index">索引名</param>
-        /// <param name="docsCount"></param>
-        /// <param name="docsDeleted"></param>
-        /// <param name="storeSize"></param>
-        public IndexInfoViewModel(string uUID,
-                                  string primary,
-                                  string primaryStoreSize,
-                                  string replica,
-                                  string index,
-                                  string docsCount,
-                                  string docsDeleted,
-                                  string storeSize,
-                                  string status,
-                                  string health)
-        {
-            UUID = uUID;
-            Primary = primary;
-            PrimaryStoreSize = primaryStoreSize;
-            Replica = replica;
-            Index = index;
-            DocsCount = docsCount;
-            DocsDeleted = docsDeleted;
-            StoreSize = storeSize;
-            Status = status;
-            Health = health;
-        }
+        //private readonly IElasticIndexAppService indexAppService;
+        //public IndexInfoViewModel(IElasticIndexAppService elasticIndexAppService)
+        //{
+        //    this.indexAppService = elasticIndexAppService;
+        //}
+        ///// <summary>
+        ///// 
+        ///// </summary>
+        ///// <param name="uUID"></param>
+        ///// <param name="primary">主分片数</param>
+        ///// <param name="primaryStoreSize">主分片大小</param>
+        ///// <param name="replica">副本数</param>
+        ///// <param name="index">索引名</param>
+        ///// <param name="docsCount"></param>
+        ///// <param name="docsDeleted"></param>
+        ///// <param name="storeSize"></param>
+        //public IndexInfoViewModel(string uUID,
+        //                          string primary,
+        //                          string primaryStoreSize,
+        //                          string replica,
+        //                          string index,
+        //                          string docsCount,
+        //                          string docsDeleted,
+        //                          string storeSize,
+        //                          string status,
+        //                          string health)
+        //{
+        //    UUID = uUID;
+        //    Primary = primary;
+        //    PrimaryStoreSize = primaryStoreSize;
+        //    Replica = replica;
+        //    Index = index;
+        //    DocsCount = docsCount;
+        //    DocsDeleted = docsDeleted;
+        //    StoreSize = storeSize;
+        //    Status = status;
+        //    Health = health;
+        //}
 
         public string UUID { get; set; } = string.Empty;
         public string Primary { get; set; } = string.Empty;
@@ -128,6 +133,14 @@ namespace ElasticView.UI.Models
         /// 分片副本 */*
         /// </summary>
         public string PriRep { get; set; }
+
+        //public IAsyncRelayCommand<string> QueryInfoCommand =>
+        //    new AsyncRelayCommand<string>(QueryIndiceInfo);
+        //private async Task QueryIndiceInfo(string indexName)
+        //{
+        //    var content = await indexAppService.Get(_url, indexName);
+        //}
+
     }
 
     public class ClusterInfoViewModel
@@ -274,7 +287,7 @@ namespace ElasticView.UI.Models
         public string Free { get; set; }
         public string Used { get; set; }
 
-        public string Desc { get; set; } =string.Empty;
+        public string Desc { get; set; } = string.Empty;
 
         public double UsedPercentValue { get; set; }
         public double FreePercentValue { get; set; }
@@ -282,7 +295,7 @@ namespace ElasticView.UI.Models
 
     public class OsMemberInfoViewModel
     {
-         
+
 
         public long TotalBytes { get; set; }
         public long FreeBytes { get; set; }

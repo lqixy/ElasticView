@@ -41,8 +41,16 @@ namespace ElasticView.UI
                     var httpClient = new HttpClient();
                     services.AddSingleton(httpClient);
 
-                    var assemblies = GetAssemblies();
-                    services.AddAutoMapper(assemblies);
+                    //var assemblies = GetAssemblies();
+                    //services.AddAutoMapper(assemblies);
+
+                    services.AddAutoMapper(x =>
+                    {
+                        x.AddProfile(new ViewModelProfiles());
+                    });
+
+
+
                     services.AddSingleton<IApiContext, ApiContext>();
                     services.AddSingleton<IElasticAppService, ElasticAppService>();
                     services.AddSingleton<IElasticIndexAppService, ElasticIndexAppService>();

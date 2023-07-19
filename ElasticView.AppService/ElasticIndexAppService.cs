@@ -111,10 +111,11 @@ namespace ElasticView.AppService
             return response.IsValid;
         }
 
-        public async Task ClearCache(string url, string indexName)
+        public async Task<bool> ClearCache(string url, string indexName)
         {
             var client = GetClient(url);
             var response = await client.Indices.ClearCacheAsync(indexName);
+            return response.IsValid;
         }
 
         public async Task<string> StatsJson(string url, string indexName)
@@ -124,10 +125,11 @@ namespace ElasticView.AppService
             return JsonConvert.SerializeObject(response.Stats, Formatting.Indented);
         }
 
-        public async Task Flush(string url, string indexName)
+        public async Task<bool> Flush(string url, string indexName)
         {
             var client = GetClient(url);
             var response = await client.Indices.FlushAsync(indexName);
+            return response.IsValid;
         }
         /// <summary>
         /// 刷新
@@ -135,10 +137,11 @@ namespace ElasticView.AppService
         /// <param name="url"></param>
         /// <param name="indexName"></param>
         /// <returns></returns>
-        public async Task Refresh(string url, string indexName)
+        public async Task<bool> Refresh(string url, string indexName)
         {
             var client = GetClient(url);
             var response = await client.Indices.RefreshAsync(indexName);
+            return response.IsValid;
         }
 
         /// <summary>
@@ -147,10 +150,11 @@ namespace ElasticView.AppService
         /// <param name="url"></param>
         /// <param name="indexName"></param>
         /// <returns></returns>
-        public async Task Forcemerge(string url, string indexName)
+        public async Task<bool> Forcemerge(string url, string indexName)
         {
             var client = GetClient(url);
             var response = await client.Indices.ForceMergeAsync(indexName);
+            return response.IsValid;
         }
 
         public async Task<string> Get(string url, string indexName)
