@@ -1,5 +1,6 @@
 ﻿using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
+using ElasticView.ApiRepository;
 using ElasticView.AppService.Contracts;
 using ElasticView.AppService.Contracts.InputDto;
 using ElasticView.UI.Pages;
@@ -30,7 +31,6 @@ namespace ElasticView.UI.Models
 
         [ObservableProperty]
         [NotifyCanExecuteChangedFor(nameof(ConnectCommand))]
-        [NotifyCanExecuteChangedFor(nameof(NavToPageCommand))]
         private string esUrl = "http://127.0.0.1:9200";
 
         [ObservableProperty]
@@ -45,6 +45,9 @@ namespace ElasticView.UI.Models
         [ObservableProperty]
         private bool indicesSelected;
 
+        [ObservableProperty]
+        private bool canUse = false;
+
         //[ObservableProperty]
         //private bool shardsSelected;
 
@@ -57,7 +60,7 @@ namespace ElasticView.UI.Models
 
         //}
 
-        private bool ButtonCanClick() => !string.IsNullOrWhiteSpace(EsUrl);
+        //private bool ButtonCanClick() => !string.IsNullOrWhiteSpace(EsUrl);
 
 
         public void Init(IServiceProvider serviceProvider,
@@ -68,14 +71,21 @@ namespace ElasticView.UI.Models
         }
 
         //public IAsyncRelayCommand<string> ConnectCommand { get; }
-        public IAsyncRelayCommand ConnectCommand => new AsyncRelayCommand(OpenDashPage, ButtonCanClick);
+        public IAsyncRelayCommand ConnectCommand => new AsyncRelayCommand(OpenDashPage);
 
         private async Task OpenDashPage()
         {
             if (string.IsNullOrWhiteSpace(EsUrl)) return;
+            try
+            {
+                await UpdateStatus();
+                frame.Navigate(new DashPage(EsUrl, serviceProvider));
 
-            await UpdateStatus();
-            frame.Navigate(new DashPage(EsUrl, serviceProvider));
+            }
+            catch (UserFriendlyException e)
+            {
+                HandyControl.Controls.MessageBox.Show(e.Message);
+            }
 
         }
 
@@ -87,6 +97,7 @@ namespace ElasticView.UI.Models
                 .GetStatus(EsUrl);
             this.Status = status == StatusEnum.Default ? "未连接" : status.ToString();
 
+            CanUse = !string.IsNullOrWhiteSpace(Status) && Status != "未连接";
             switch (status)
             {
                 case StatusEnum.Green:
@@ -104,7 +115,7 @@ namespace ElasticView.UI.Models
         }
 
 
-        [RelayCommand(CanExecute = nameof(ButtonCanClick))]
+        [RelayCommand]
         private void NavToPage(int index)
         {
             SwitchPage(index);

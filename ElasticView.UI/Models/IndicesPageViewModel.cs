@@ -16,6 +16,7 @@ using HandyControl.Controls;
 using System.Windows;
 using ElasticView.UI.Windows;
 using Nest;
+using ElasticView.ApiRepository;
 
 namespace ElasticView.UI.Models
 {
@@ -127,8 +128,14 @@ namespace ElasticView.UI.Models
             mapper = serviceProvider
               .GetRequiredService<IMapper>();
 
-
-            await InitSource();
+            try
+            {
+                await InitSource();
+            }
+            catch (UserFriendlyException e)
+            {
+                HandyControl.Controls.MessageBox.Show(e.Message);
+            }
 
         }
 

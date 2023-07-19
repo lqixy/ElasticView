@@ -28,20 +28,31 @@ namespace ElasticView.ApiRepository
                     new AuthenticationHeaderValue("Basic",
                     Convert.ToBase64String(Encoding.UTF8.GetBytes($"{userName}:{pwd}")));
             }
-            using (var response = await _httpClient.GetAsync(url))
+            try
             {
-                if (response.IsSuccessStatusCode)
+                using (var response = await _httpClient.GetAsync(url))
                 {
+                    if (response.IsSuccessStatusCode)
+                    {
 
-                }
-                else
-                {
-                    throw new Exception($"请示api错误,StatusCode:{response.StatusCode} \r\n ReasonPhrase:{response.ReasonPhrase}");
-                }
+                    }
+                    else
+                    {
+                        throw new Exception($"请示api错误,StatusCode:{response.StatusCode} \r\n ReasonPhrase:{response.ReasonPhrase}");
+                    }
 
-                var content = await response.Content.ReadAsStringAsync();
-                var jsonObject = JsonConvert.DeserializeObject<TResult>(content);
-                return jsonObject;
+                    var content = await response.Content.ReadAsStringAsync();
+                    var jsonObject = JsonConvert.DeserializeObject<TResult>(content);
+                    return jsonObject;
+                }
+            }
+            catch (HttpRequestException e)
+            {
+                throw new UserFriendlyException(e.Message);
+            }
+            catch (JsonSerializationException e)
+            {
+                throw new UserFriendlyException($"json序列化错误: {e.Message}");
             }
         }
 

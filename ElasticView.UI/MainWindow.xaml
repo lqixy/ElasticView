@@ -250,6 +250,7 @@
                                    Style="{DynamicResource MenuToggleButtonStyle}" 
                                    Tag="ViewDashboard"
                                    TabIndex="0"
+                                   IsEnabled="{Binding CanUse}"
                                    IsChecked="{Binding DashSelected}"
                                    Content="详情" 
                                    Command="{Binding NavToPageCommand}"
@@ -267,7 +268,7 @@
                                   Style="{DynamicResource MenuToggleButtonStyle}" 
                                   Tag="ResistorNodes" 
                                   Content="节点"
-                                   
+                                   IsEnabled="{Binding CanUse}"
                                   TabIndex="1"
                                    IsChecked="{Binding NodesSelected}"
                                    Command="{Binding NavToPageCommand}"
@@ -285,7 +286,7 @@
                                    Tag="FormatListBulleted" 
                                    Content="索引"
                                    TabIndex="2"
-                                   
+                                   IsEnabled="{Binding CanUse}"
                                    IsChecked="{Binding IndicesSelected}"
                                    Command="{Binding NavToPageCommand}"
                                    CommandParameter="{Binding RelativeSource={RelativeSource Mode=Self}, Path=TabIndex}"

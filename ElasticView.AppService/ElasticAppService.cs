@@ -164,7 +164,9 @@ namespace ElasticView.AppService
             if (health is null) return StatusEnum.Default;
 
             var str = health.Status.ToString();
-            Enum.TryParse(str, out StatusEnum status);
+            var status = (StatusEnum)Enum.Parse(typeof(StatusEnum), str, true);
+
+            //var f = Enum.TryParse(str, out StatusEnum status);
             return status;
         }
 

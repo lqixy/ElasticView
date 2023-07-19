@@ -47,7 +47,7 @@ namespace ElasticView.AppService.Contracts.Output
         //public NodeIngestStats Ingest { get; internal set; }
 
         [JsonProperty("ip")]
-        public IEnumerable<string> Ip { get; internal set; }
+        public string Ip { get; internal set; }
 
         [JsonProperty("jvm")]
         public NodeJvmStatsOutput Jvm { get; internal set; }

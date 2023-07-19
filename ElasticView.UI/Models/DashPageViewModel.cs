@@ -1,14 +1,18 @@
 ﻿using AutoMapper;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
+using ElasticView.ApiRepository;
 using ElasticView.AppService.Contracts;
 using ElasticView.AppService.Contracts.InputDto;
+using ElasticView.UI.Pages;
 using Microsoft.Extensions.DependencyInjection;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Security.Policy;
 using System.Text;
 using System.Threading.Tasks;
+using System.Windows.Controls;
 
 namespace ElasticView.UI.Models
 {
@@ -48,29 +52,35 @@ namespace ElasticView.UI.Models
             if (string.IsNullOrWhiteSpace(url)) return;
             var mapper = serviceProvider.GetRequiredService<IMapper>();
             var appService = serviceProvider.GetRequiredService<IElasticAppService>();
-             
 
-            var indicesInfo = await appService.GetIndices(url);
-            this.IndicesInfo = mapper.Map<IndicesInfoViewModel>(indicesInfo);
+            try
+            {
+                var indicesInfo = await appService.GetIndices(url);
+                this.IndicesInfo = mapper.Map<IndicesInfoViewModel>(indicesInfo);
 
-            var clusterHealthInfo = await appService.GetClusterHealth(url);
-            this.ClusterHealthInfo = mapper.Map<ClusterHealthInfoViewModel>(clusterHealthInfo);
+                var clusterHealthInfo = await appService.GetClusterHealth(url);
+                this.ClusterHealthInfo = mapper.Map<ClusterHealthInfoViewModel>(clusterHealthInfo);
 
-            var clusterStatsInfo = await appService.GetClusterStatsInfo(url);
-            this.ClusterStatsInfo = mapper.Map<ClusterStatsInfoViewModel>(clusterStatsInfo);
+                var clusterStatsInfo = await appService.GetClusterStatsInfo(url);
+                this.ClusterStatsInfo = mapper.Map<ClusterStatsInfoViewModel>(clusterStatsInfo);
 
-            var fileSystemInfo = await appService.GetEsFileSystemInfo(url);
-            this.FileSystemInfo = mapper.Map<EsFileSystemInfoViewModel>(fileSystemInfo);
+                var fileSystemInfo = await appService.GetEsFileSystemInfo(url);
+                this.FileSystemInfo = mapper.Map<EsFileSystemInfoViewModel>(fileSystemInfo);
 
-            var jvmInfo = await appService.GetJvm(url);
-            this.JvmInfo = mapper.Map<JvmInfoViewModel>(jvmInfo);
+                var jvmInfo = await appService.GetJvm(url);
+                this.JvmInfo = mapper.Map<JvmInfoViewModel>(jvmInfo);
 
-            var memberInfo = await appService.GetOsMemberInfo(url);
-            this.MemberInfo = mapper.Map<OsMemberInfoViewModel>(memberInfo);
+                var memberInfo = await appService.GetOsMemberInfo(url);
+                this.MemberInfo = mapper.Map<OsMemberInfoViewModel>(memberInfo);
 
-            var cpuInfo = await appService.GetCpuInfo(url);
-            this.CpuInfo = mapper.Map<OSCpuInfoViewModel>(cpuInfo);
+                var cpuInfo = await appService.GetCpuInfo(url);
+                this.CpuInfo = mapper.Map<OSCpuInfoViewModel>(cpuInfo);
 
+            }
+            catch (UserFriendlyException e)
+            {
+                HandyControl.Controls.MessageBox.Show(e.Message);
+            }
         }
 
         //public IAsyncRelayCommand LoadDataCommand { get; }
