@@ -1,14 +1,7 @@
-﻿using AutoMapper;
-using ElasticView.AppService;
-using ElasticView.AppService.Contracts;
+﻿using ElasticView.AppService.Contracts;
 using ElasticView.UI.Models;
-using ElasticView.UI.Windows;
 using Microsoft.Extensions.DependencyInjection;
-using Nest;
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;

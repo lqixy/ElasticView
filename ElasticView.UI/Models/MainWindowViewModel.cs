@@ -2,18 +2,11 @@
 using CommunityToolkit.Mvvm.Input;
 using ElasticView.ApiRepository;
 using ElasticView.AppService.Contracts;
-using ElasticView.AppService.Contracts.InputDto;
 using ElasticView.UI.Pages;
 using Microsoft.Extensions.DependencyInjection;
-using Nest;
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Security.Policy;
-using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Controls;
-using System.Windows.Controls.Primitives;
 using System.Windows.Media;
 
 namespace ElasticView.UI.Models

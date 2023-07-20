@@ -1,29 +1,38 @@
-﻿using ElasticView.AppService.Contracts;
+﻿using ElasticView.ApiDomain;
+using ElasticView.AppService.Contracts;
 using ElasticView.AppService.Contracts.InputDto;
 using ElasticView.AppService.Contracts.Output;
-using Nest;
 using Newtonsoft.Json;
-using System;
-using System.Collections.Concurrent;
-using System.Collections.Generic;
-using System.Linq;
-using System.Net.Http.Json;
-using System.Text;
-using System.Text.Json.Serialization;
-using System.Threading.Tasks;
 
 namespace ElasticView.AppService
 {
     public class ElasticIndexAppService : IElasticIndexAppService
     {
-        public async Task CreateIndex(string url, CreateIndexInput indexInput)
-        {
-            var client = GetClient(url);
 
-            var response = await client.Indices.CreateAsync(indexInput.Name, req => req.Settings(s =>
-                 s.NumberOfShards(indexInput.ShardsCount)
-                 .NumberOfReplicas(indexInput.ReplicasCount)
-                 ));
+        private readonly IApiContext _context;
+
+        public ElasticIndexAppService(IApiContext context)
+        {
+            _context = context;
+        }
+
+        //public async Task CreateIndex(string url, CreateIndexInput indexInput)
+        //{
+        //    var client = GetClient(url);
+
+        //    var response = await client.Indices.CreateAsync(indexInput.Name, req => req.Settings(s =>
+        //         s.NumberOfShards(indexInput.ShardsCount)
+        //         .NumberOfReplicas(indexInput.ReplicasCount)
+        //         ));
+        //}
+
+        public async Task<bool> CreateIndex(string url, CreateIndexInput indexInput)
+        {
+            //var client = GetClient(url);
+            url = $"{url}/{indexInput.IndexName}";
+            var content = JsonConvert.SerializeObject(indexInput);
+            var response = await _context.PutAsync<ElasticSearchResponseOutput>(url, content);
+            return response.Success;
         }
 
         //public async Task Get(string url)
@@ -37,18 +46,42 @@ namespace ElasticView.AppService
         //    response.Records.Select(x => new IndexInfoDto(x.UUID,x.Primary,x.PrimaryStoreSize,x.));
         //}
 
+        ///// <summary>
+        ///// 获取别名
+        ///// </summary>
+        ///// <param name="url"></param>
+        ///// <param name="indexName"></param>
+        ///// <returns></returns>
+        //public async Task GetAlias(string url, string indexName)
+        //{
+        //    var client = GetClient(url);
+        //    client
+        //    url = $"{url}/{indexName}/_alias";
+        //    var response = await _context.GetAsync<>(url);
+        //}
+
+
         /// <summary>
-        /// 获取别名
+        /// 强制合并索引
         /// </summary>
         /// <param name="url"></param>
         /// <param name="indexName"></param>
         /// <returns></returns>
-        public async Task GetAlias(string url, string indexName)
+        public async Task<bool> Forcemerge(string url, string indexName)
         {
-            var client = GetClient(url);
-            var response = await client.Indices.GetAliasAsync(indexName);
-            //response.Indices.Select(x=>x.Value.)
+            url = $"{url}/{indexName}_forcemerge";
+            var response = await _context.GetAsync<CacheResponseOutput>(url);
+            return response.Shards is not null;
         }
+
+        public async Task<string> Get(string url, string indexName)
+        {
+            url = $"{url}/{indexName}";
+            var response = await _context.GetAsync<string>(url);
+            return response;
+            //return JsonConvert.SerializeObject(response.Indices.Values, Formatting.Indented);
+        }
+
 
         ///// <summary>
         ///// 
@@ -77,60 +110,101 @@ namespace ElasticView.AppService
         //    return bags;
         //}
 
-        public async Task AddAlias(string url, string indexName, string aliasName)
+        public async Task<bool> AddAlias(string url, string indexName, string aliasName)
         {
-            var client = GetClient(url);
-            var response = await client.Indices.PutAliasAsync(indexName, aliasName);
+            //var client = GetClient(url);
+            //var response = await client.Indices.PutAliasAsync(indexName, aliasName);
+            url = $"{url}/{indexName}/_alias/{aliasName}";
+            var response = await _context.PutAsync<ElasticSearchResponseOutput>(url);
+            return response.Success;
         }
 
-        public async Task DeleteAlias(string url, string indexName, string aliasName)
+        public async Task<bool> DeleteAlias(string url, string indexName, string aliasName)
         {
-            var client = GetClient(url);
-            var response = await client.Indices.DeleteAliasAsync(indexName, aliasName);
+            //var client = GetClient(url);
+            //var response = await client.Indices.DeleteAliasAsync(indexName, aliasName);
+            url = $"{url}/{indexName}/_alias/{aliasName}";
+            var response = await _context.DeleteAsync<ElasticSearchResponseOutput>(url);
+            return response.Success;
         }
-
 
         public async Task<bool> CloseIndex(string url, string indexName)
         {
-            var client = GetClient(url);
-            var response = await client.Indices.CloseAsync(indexName);
-            return response.IsValid;
+            url = $"{url}/{indexName}/_close";
+            var response = await _context.PostAsync<ElasticSearchResponseOutput>(url);
+            return response.Success;
         }
+
+        //public async Task<bool> CloseIndex(string url, string indexName)
+        //{
+        //    var client = GetClient(url);
+        //    var response = await client.Indices.CloseAsync(indexName);
+        //    return response.IsValid;
+        //}
 
         public async Task<bool> OpenIndex(string url, string indexName)
         {
-            var client = GetClient(url);
-            var response = await client.Indices.OpenAsync(indexName);
-            return response.IsValid;
+            url = $"{url}/{indexName}/_open";
+            var response = await _context.PostAsync<ElasticSearchResponseOutput>(url);
+            return response.Success;
         }
+
+        //public async Task<bool> OpenIndex(string url, string indexName)
+        //{
+        //    var client = GetClient(url);
+        //    var response = await client.Indices.OpenAsync(indexName);
+        //    return response.IsValid;
+        //}
+
+        //public async Task<bool> DeleteIndex(string url, string indexName)
+        //{
+        //    var client = GetClient(url);
+        //    var response = await client.Indices.DeleteAsync(indexName);
+        //    return response.IsValid;
+        //}
 
         public async Task<bool> DeleteIndex(string url, string indexName)
         {
-            var client = GetClient(url);
-            var response = await client.Indices.DeleteAsync(indexName);
-            return response.IsValid;
+            url = $"{url}/{indexName}";
+            var response = await _context.DeleteAsync<ElasticSearchResponseOutput>(url);
+            return response.Success;
         }
 
         public async Task<bool> ClearCache(string url, string indexName)
         {
-            var client = GetClient(url);
-            var response = await client.Indices.ClearCacheAsync(indexName);
-            return response.IsValid;
+            url = $"{url}/{indexName}/_cache/clear";
+            var response = await _context.PostAsync<CacheResponseOutput>(url);
+            return response.Shards is not null;
         }
 
-        public async Task<string> StatsJson(string url, string indexName)
-        {
-            var client = GetClient(url);
-            var response = await client.Indices.StatsAsync(indexName);
-            return JsonConvert.SerializeObject(response.Stats, Formatting.Indented);
-        }
+        //public async Task<bool> ClearCache(string url, string indexName)
+        //{
+        //    var client = GetClient(url);
+        //    var response = await client.Indices.ClearCacheAsync(indexName);
+        //    return response.IsValid;
+        //}
+
+        //public async Task<string> StatsJson(string url, string indexName)
+        //{
+        //    var client = GetClient(url);
+        //    var response = await client.Indices.StatsAsync(indexName);
+        //    return JsonConvert.SerializeObject(response.Stats, Formatting.Indented);
+        //}
 
         public async Task<bool> Flush(string url, string indexName)
         {
-            var client = GetClient(url);
-            var response = await client.Indices.FlushAsync(indexName);
-            return response.IsValid;
+            url = $"{url}/{indexName}/_flush";
+            var response = await _context.PostAsync<CacheResponseOutput>(url);
+            return response.Shards is not null;
         }
+
+        //public async Task<bool> Flush(string url, string indexName)
+        //{
+        //    var client = GetClient(url);
+        //    var response = await client.Indices.FlushAsync(indexName);
+        //    return response.IsValid;
+        //}
+
         /// <summary>
         /// 刷新
         /// </summary>
@@ -139,37 +213,51 @@ namespace ElasticView.AppService
         /// <returns></returns>
         public async Task<bool> Refresh(string url, string indexName)
         {
-            var client = GetClient(url);
-            var response = await client.Indices.RefreshAsync(indexName);
-            return response.IsValid;
+            url = $"{url}/{indexName}/_refresh";
+            var response = await _context.PostAsync<CacheResponseOutput>(url);
+            return response.Shards is not null;
         }
 
-        /// <summary>
-        /// 强制合并索引
-        /// </summary>
-        /// <param name="url"></param>
-        /// <param name="indexName"></param>
-        /// <returns></returns>
-        public async Task<bool> Forcemerge(string url, string indexName)
-        {
-            var client = GetClient(url);
-            var response = await client.Indices.ForceMergeAsync(indexName);
-            return response.IsValid;
-        }
+        ///// <summary>
+        ///// 刷新
+        ///// </summary>
+        ///// <param name="url"></param>
+        ///// <param name="indexName"></param>
+        ///// <returns></returns>
+        //public async Task<bool> Refresh(string url, string indexName)
+        //{
+        //    var client = GetClient(url);
+        //    var response = await client.Indices.RefreshAsync(indexName);
+        //    return response.IsValid;
+        //}
 
-        public async Task<string> Get(string url, string indexName)
-        {
-            var client = GetClient(url);
-            var response = await client.Indices.GetAsync(indexName);
-            //return response.Indices.Values;
-            return JsonConvert.SerializeObject(response.Indices.Values, Formatting.Indented);
-        }
+        ///// <summary>
+        ///// 强制合并索引
+        ///// </summary>
+        ///// <param name="url"></param>
+        ///// <param name="indexName"></param>
+        ///// <returns></returns>
+        //public async Task<bool> Forcemerge(string url, string indexName)
+        //{
+        //    var client = GetClient(url);
+        //    var response = await client.Indices.ForceMergeAsync(indexName);
+        //    return response.IsValid;
+        //}
 
-        private ElasticClient GetClient(string url)
-        {
-            return new ElasticClient(new Uri(url));
+        //public async Task<string> Get(string url, string indexName)
+        //{
+        //    var client = GetClient(url);
+        //    var response = await client.Indices.GetAsync(indexName);
+        //    //return response.Indices.Values;
+        //    return JsonConvert.SerializeObject(response.Indices.Values, Formatting.Indented);
+        //}
 
-        }
+
+        //private ElasticClient GetClient(string url)
+        //{
+        //    return new ElasticClient(new Uri(url));
+
+        //}
         //private ElasticClient GetClient(string url)
         //{
         //    var settings = new ConnectionSettings(new Uri(url.Url))

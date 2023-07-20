@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Newtonsoft.Json;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -14,12 +15,15 @@ namespace ElasticView.AppService.Contracts.InputDto
 
         public CreateIndexInput(string name, int shardsCount, int replicasCount)
         {
-            Name = name;
+            IndexName = name;
             ShardsCount = shardsCount;
             ReplicasCount = replicasCount;
         }
-
-        public string Name { get; set; }
+        /// <summary>
+        /// 
+        /// </summary>
+        [JsonIgnore]
+        public string IndexName { get; set; }
 
         public int ShardsCount { get; set; }
 

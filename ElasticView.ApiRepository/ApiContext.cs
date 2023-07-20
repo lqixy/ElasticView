@@ -56,6 +56,90 @@ namespace ElasticView.ApiRepository
             }
         }
 
+        public async Task<TResult> PostAsync<TResult>(string url, string input = "")
+        {
+            try
+            {
+                var stringContent = new StringContent(input);
+                using (var response = await _httpClient.PostAsync(url, stringContent))
+                {
+                    if (response.IsSuccessStatusCode)
+                    {
+
+                    }
+                    else
+                    {
+                        throw new UserFriendlyException($"请求api错误,StatusCode:{response.StatusCode} \r\n ReasonPhrase:{response.ReasonPhrase}");
+                    }
+
+                    var content = await response.Content.ReadAsStringAsync();
+                    var jsonObject = JsonConvert.DeserializeObject<TResult>(content);
+                    return jsonObject;
+                }
+            }
+            catch (HttpRequestException e)
+            {
+                throw new UserFriendlyException(e.Message);
+            }
+            catch (JsonSerializationException e)
+            {
+                throw new UserFriendlyException($"json序列化错误: {e.Message}");
+            }
+        }
+
+
+        public async Task<TResult> PutAsync<TResult>(string url, string input="")
+        {
+            var stringContent = string.IsNullOrWhiteSpace(input) 
+                ? null : new StringContent($"{input}", Encoding.UTF8);
+            using (var response = await _httpClient.PutAsync(url, stringContent))
+            {
+                if (response.IsSuccessStatusCode)
+                {
+
+                }
+                else
+                {
+                    throw new UserFriendlyException($"请求api错误,StatusCode:{response.StatusCode} \r\n ReasonPhrase:{response.ReasonPhrase}");
+                }
+
+                var content = await response.Content.ReadAsStringAsync();
+                var jsonObject = JsonConvert.DeserializeObject<TResult>(content);
+                return jsonObject;
+            }
+        }
+
+        public async Task<TResult> DeleteAsync<TResult>(string url)
+        {
+            try
+            {
+                using (var response = await _httpClient.DeleteAsync(url))
+                {
+                    if (response.IsSuccessStatusCode)
+                    {
+
+                    }
+                    else
+                    {
+                        throw new UserFriendlyException($"请求api错误,StatusCode:{response.StatusCode} \r\n ReasonPhrase:{response.ReasonPhrase}");
+                    }
+
+                    var content = await response.Content.ReadAsStringAsync();
+                    var jsonObject = JsonConvert.DeserializeObject<TResult>(content);
+                    return jsonObject;
+                }
+            }
+            catch (HttpRequestException e)
+            {
+                throw new UserFriendlyException(e.Message);
+            }
+            catch (JsonSerializationException e)
+            {
+                throw new UserFriendlyException($"json序列化错误: {e.Message}");
+            }
+        }
+
+
         //public async Task<TResult> GetAuthAsync<TResult>(string url)
         //{
 

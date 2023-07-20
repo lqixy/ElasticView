@@ -1,14 +1,6 @@
 ﻿using ElasticView.ApiDomain;
 using ElasticView.AppService.Contracts;
-using ElasticView.AppService.Contracts.InputDto;
 using ElasticView.AppService.Contracts.Output;
-using Nest;
-using Newtonsoft.Json;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace ElasticView.AppService
 {

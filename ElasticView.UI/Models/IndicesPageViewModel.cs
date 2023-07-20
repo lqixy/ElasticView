@@ -8,14 +8,11 @@ using Microsoft.Extensions.DependencyInjection;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Security.Policy;
-using System.Text;
 using System.Threading.Tasks;
 using System.Collections.ObjectModel;
 using HandyControl.Controls;
 using System.Windows;
 using ElasticView.UI.Windows;
-using Nest;
 using ElasticView.ApiRepository;
 
 namespace ElasticView.UI.Models
