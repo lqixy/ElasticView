@@ -87,25 +87,72 @@ namespace ElasticView.ApiRepository
             }
         }
 
-
-        public async Task<TResult> PutAsync<TResult>(string url, string input="")
+        public async Task<TResult> PutAsync<TResult, TInput>(string url, TInput? input = null)
+            where TInput : ElasticSearchApiInput
         {
-            var stringContent = string.IsNullOrWhiteSpace(input) 
-                ? null : new StringContent($"{input}", Encoding.UTF8);
-            using (var response = await _httpClient.PutAsync(url, stringContent))
+            try
             {
-                if (response.IsSuccessStatusCode)
+                var stringContent = input is null
+                    ? null :
+                    new StringContent(input.ToJson(), Encoding.UTF8, "application/json");
+                using (var response = await _httpClient.PutAsync(url, stringContent))
                 {
+                    if (response.IsSuccessStatusCode)
+                    {
 
+                    }
+                    else
+                    {
+                        //throw new UserFriendlyException($"请求api错误,StatusCode:{response.StatusCode} \r\n ReasonPhrase:{response.ReasonPhrase}");
+                    }
+
+                    var content = await response.Content.ReadAsStringAsync();
+                    var jsonObject = JsonConvert.DeserializeObject<TResult>(content);
+                    return jsonObject;
                 }
-                else
+            }
+            catch (HttpRequestException e)
+            {
+                throw new UserFriendlyException(e.Message);
+
+            }
+            catch (JsonSerializationException e)
+            {
+                throw new UserFriendlyException($"json序列化错误: {e.Message}");
+            }
+        }
+
+        public async Task<TResult> PutAsync<TResult>(string url, string input = "")
+        {
+            try
+            {
+
+                var stringContent = string.IsNullOrWhiteSpace(input)
+                    ? null : new StringContent($"{input}", Encoding.UTF8, "application/json");
+                using (var response = await _httpClient.PutAsync(url, stringContent))
                 {
-                    throw new UserFriendlyException($"请求api错误,StatusCode:{response.StatusCode} \r\n ReasonPhrase:{response.ReasonPhrase}");
-                }
+                    if (response.IsSuccessStatusCode)
+                    {
 
-                var content = await response.Content.ReadAsStringAsync();
-                var jsonObject = JsonConvert.DeserializeObject<TResult>(content);
-                return jsonObject;
+                    }
+                    else
+                    {
+                        //throw new UserFriendlyException($"请求api错误,StatusCode:{response.StatusCode} \r\n ReasonPhrase:{response.ReasonPhrase}");
+                    }
+
+                    var content = await response.Content.ReadAsStringAsync();
+                    var jsonObject = JsonConvert.DeserializeObject<TResult>(content);
+                    return jsonObject;
+                }
+            }
+            catch (HttpRequestException e)
+            {
+                throw new UserFriendlyException(e.Message);
+
+            }
+            catch (JsonSerializationException e)
+            {
+                throw new UserFriendlyException($"json序列化错误: {e.Message}");
             }
         }
 

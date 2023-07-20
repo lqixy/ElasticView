@@ -1,5 +1,6 @@
 ﻿using ElasticView.ApiDomain;
 using ElasticView.AppService.Contracts;
+using ElasticView.AppService.Contracts.ApiDto;
 using ElasticView.AppService.Contracts.InputDto;
 using ElasticView.AppService.Contracts.Output;
 using Newtonsoft.Json;
@@ -26,13 +27,33 @@ namespace ElasticView.AppService
         //         ));
         //}
 
-        public async Task<bool> CreateIndex(string url, CreateIndexInput indexInput)
+        //public async Task<bool> CreateIndex(string url, CreateIndexInput indexInput)
+        //{
+        //    //var client = GetClient(url);
+        //    url = $"{url}/{indexInput.IndexName}";
+
+        //    var input = new CreateIndexApiInput(
+        //        new CreateIndexApiSettingsInput(indexInput.ShardsCount, indexInput.ReplicasCount));
+
+        //    var response = await _context
+        //        .PutAsync<ElasticSearchApiOutput, CreateIndexApiInput>(url, input);
+        //    return response.Success;
+        //}
+
+        public async Task<CreateIndexApiOutput> CreateIndex(string url, CreateIndexInput indexInput)
         {
             //var client = GetClient(url);
             url = $"{url}/{indexInput.IndexName}";
-            var content = JsonConvert.SerializeObject(indexInput);
-            var response = await _context.PutAsync<ElasticSearchResponseOutput>(url, content);
-            return response.Success;
+
+            var input = new CreateIndexApiInput(
+                new CreateIndexApiSettingsInput(indexInput.ShardsCount, indexInput.ReplicasCount));
+
+            var response = await _context
+                .PutAsync<ElasticSearchApiOutput, CreateIndexApiInput>(url, input);
+
+            var msg = response.Success ? "成功" : response.Error.Reason;
+            return new CreateIndexApiOutput(response.Success, msg
+                );
         }
 
         //public async Task Get(string url)
@@ -115,7 +136,7 @@ namespace ElasticView.AppService
             //var client = GetClient(url);
             //var response = await client.Indices.PutAliasAsync(indexName, aliasName);
             url = $"{url}/{indexName}/_alias/{aliasName}";
-            var response = await _context.PutAsync<ElasticSearchResponseOutput>(url);
+            var response = await _context.PutAsync<ElasticSearchApiOutput>(url);
             return response.Success;
         }
 
@@ -124,14 +145,14 @@ namespace ElasticView.AppService
             //var client = GetClient(url);
             //var response = await client.Indices.DeleteAliasAsync(indexName, aliasName);
             url = $"{url}/{indexName}/_alias/{aliasName}";
-            var response = await _context.DeleteAsync<ElasticSearchResponseOutput>(url);
+            var response = await _context.DeleteAsync<ElasticSearchApiOutput>(url);
             return response.Success;
         }
 
         public async Task<bool> CloseIndex(string url, string indexName)
         {
             url = $"{url}/{indexName}/_close";
-            var response = await _context.PostAsync<ElasticSearchResponseOutput>(url);
+            var response = await _context.PostAsync<ElasticSearchApiOutput>(url);
             return response.Success;
         }
 
@@ -145,7 +166,7 @@ namespace ElasticView.AppService
         public async Task<bool> OpenIndex(string url, string indexName)
         {
             url = $"{url}/{indexName}/_open";
-            var response = await _context.PostAsync<ElasticSearchResponseOutput>(url);
+            var response = await _context.PostAsync<ElasticSearchApiOutput>(url);
             return response.Success;
         }
 
@@ -166,7 +187,7 @@ namespace ElasticView.AppService
         public async Task<bool> DeleteIndex(string url, string indexName)
         {
             url = $"{url}/{indexName}";
-            var response = await _context.DeleteAsync<ElasticSearchResponseOutput>(url);
+            var response = await _context.DeleteAsync<ElasticSearchApiOutput>(url);
             return response.Success;
         }
 

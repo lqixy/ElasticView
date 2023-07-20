@@ -12,5 +12,7 @@ namespace ElasticView.ApiDomain
         Task<TResult> GetAsync<TResult>(string url, string userName = "", string pwd = "");
         Task<TResult> PostAsync<TResult>(string url, string input = "");
         Task<TResult> PutAsync<TResult>(string url, string input = "");
+        Task<TResult> PutAsync<TResult, TInput>(string url, TInput? input = null) 
+            where TInput : ElasticSearchApiInput;
     }
 }

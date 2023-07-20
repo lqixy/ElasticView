@@ -18,8 +18,4 @@
     <ProjectReference Include="..\ElasticView.ApiRepository\ElasticView.ApiRepository.csproj" />
   </ItemGroup>
 
-  <ItemGroup>
-    <Folder Include="ApiDto\" />
-  </ItemGroup>
-
 </Project>

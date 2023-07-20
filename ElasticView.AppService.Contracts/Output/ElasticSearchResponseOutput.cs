@@ -7,16 +7,16 @@ using System.Threading.Tasks;
 
 namespace ElasticView.AppService.Contracts.Output
 {
-    public class ElasticSearchResponseOutput
-    {
-        [JsonProperty("acknowledged")]
-        public bool Success { get; set; }
+    //public class ElasticSearchResponseOutput
+    //{
+    //    [JsonProperty("acknowledged")]
+    //    public bool Success { get; set; }
 
-        public string Index { get; set; }
+    //    public string Index { get; set; }
         
-        [JsonProperty("shards_acknowledged")]
-        public bool ShardsAcknowledged { get; set; }
-    }
+    //    [JsonProperty("shards_acknowledged")]
+    //    public bool ShardsAcknowledged { get; set; }
+    //}
 
     public class CacheResponseOutput
     {

@@ -14,6 +14,7 @@ using HandyControl.Controls;
 using System.Windows;
 using ElasticView.UI.Windows;
 using ElasticView.ApiRepository;
+using HandyControl.Tools;
 
 namespace ElasticView.UI.Models
 {
@@ -310,16 +311,21 @@ namespace ElasticView.UI.Models
 
 
         //public RelayCommand CreateIndexWindowCommand => new RelayCommand(CreateIndexWindow);
+        public IAsyncRelayCommand CreateIndexWindowCommand =>
+            new AsyncRelayCommand(CreateIndexWindow);
 
-        [RelayCommand]
-        private void CreateIndexWindow()
+        private async Task CreateIndexWindow()
         {
-            var window = new IndexDetail()
+            var window = new IndicesDetailWindow(_url, indexAppService)
             {
                 WindowStartupLocation = WindowStartupLocation.CenterOwner,
                 Owner = Application.Current.MainWindow,
             };
-            window.ShowDialog();
+            var dialog = window.ShowDialog();
+            if (dialog.HasValue && dialog.Value)
+            {
+                await InitSource();
+            }
         }
     }
 

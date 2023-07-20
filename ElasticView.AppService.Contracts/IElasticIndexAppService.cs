@@ -1,4 +1,5 @@
-﻿using ElasticView.AppService.Contracts.InputDto;
+﻿using ElasticView.AppService.Contracts.ApiDto;
+using ElasticView.AppService.Contracts.InputDto;
 using ElasticView.AppService.Contracts.Output;
 using System;
 using System.Collections.Generic;
@@ -13,7 +14,7 @@ namespace ElasticView.AppService.Contracts
         Task<bool> AddAlias(string url, string indexName, string aliasName);
         Task<bool> ClearCache(string url, string indexName);
         Task<bool> CloseIndex(string url, string indexName);
-        Task<bool> CreateIndex(string url, CreateIndexInput indexInput);
+        Task<CreateIndexApiOutput> CreateIndex(string url, CreateIndexInput indexInput);
         Task<bool> DeleteAlias(string url, string indexName, string aliasName);
         Task<bool> DeleteIndex(string url, string indexName);
         Task<bool> Flush(string url, string indexName);

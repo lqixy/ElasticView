@@ -1,0 +1,70 @@
+﻿<Window x:Class="ElasticView.UI.Windows.IndicesDetailWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:hc="https://handyorg.github.io/handycontrol"
+        xmlns:local="clr-namespace:ElasticView.UI.Windows"
+        xmlns:vm="clr-namespace:ElasticView.UI.Models"
+        mc:Ignorable="d"
+        Title="IndicesDetailWindow" Height="450" Width="800">
+    <Window.DataContext>
+        <vm:IndicesDetailWindowViewModel />
+    </Window.DataContext>
+    <Grid>
+        <StackPanel>
+            <hc:TextBox hc:InfoElement.Placeholder=""
+                        hc:InfoElement.Title="索引名称"
+                        hc:InfoElement.TitlePlacement="Left"
+                        Margin="30"
+                        hc:InfoElement.Necessary="True"
+                        hc:InfoElement.TitleWidth="140"
+                        Width="400"
+                        >
+                <hc:TextBox.Text>
+                    <Binding Path="IndexName" UpdateSourceTrigger="PropertyChanged">
+                        <Binding.ValidationRules>
+                            <hc:NoBlankTextRule />
+                        </Binding.ValidationRules>
+                    </Binding>
+                </hc:TextBox.Text>
+            </hc:TextBox>
+
+            <hc:NumericUpDown  Maximum="99" 
+                               Minimum="1"
+                        Margin="30"
+                              Value="{Binding ShardCount}" 
+                              Width="400" 
+                              hc:InfoElement.TitleWidth="140"
+                              hc:InfoElement.Placeholder="" 
+                              hc:InfoElement.TitlePlacement="Left" 
+                              hc:InfoElement.Title="分片数量" 
+                              Style="{StaticResource NumericUpDownExtend}" 
+                              hc:InfoElement.Necessary="True"/>
+
+            <hc:NumericUpDown  Maximum="99" 
+                               Minimum="1"
+                        Margin="30"
+                              Value="{Binding ShardCount}" 
+                              Width="400" 
+                              hc:InfoElement.TitleWidth="140"
+                              hc:InfoElement.Placeholder="" 
+                              hc:InfoElement.TitlePlacement="Left" 
+                              hc:InfoElement.Title="分片数量" 
+                              Style="{StaticResource NumericUpDownExtend}" 
+                              hc:InfoElement.Necessary="True"/>
+
+            <UniformGrid  Margin="50">
+                <Button Style="{StaticResource ButtonInfo}" 
+                        Content="创建" 
+                        Command="{Binding CreateIndexCommand}"
+                        />
+                <Button Style="{StaticResource ButtonDashed}"
+                        Content="取消"
+                        Command="{Binding CloseWindowCommand}"
+                        />
+            </UniformGrid>
+
+        </StackPanel>
+    </Grid>
+</Window>
