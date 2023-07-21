@@ -73,6 +73,18 @@ namespace ElasticView.UI
             var window = AppHost.Services.GetRequiredService<MainWindow>();
             window.Show();
             base.OnStartup(e);
+
+            this.DispatcherUnhandledException += App_DispatcherUnhandledException;
+        }
+
+        private void App_DispatcherUnhandledException(object sender, System.Windows.Threading.DispatcherUnhandledExceptionEventArgs e)
+        {
+            var logger = AppHost.Services.GetRequiredService<ILogger>();
+            logger.Error(e.Exception.Message, e.Exception);
+
+            HandyControl.Controls.MessageBox.Show("出错啦!,请查看日志或联系管理员.");
+
+            e.Handled = true;
         }
 
         private Assembly[] GetAssemblies()

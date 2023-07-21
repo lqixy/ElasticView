@@ -294,7 +294,7 @@ namespace ElasticView.UI.Models
         private async Task QueryIndiceStats(string indexName)
         {
             CheckIndexName(indexName);
-            var content = await indexAppService.Get(_url, indexName);
+            var content = await indexAppService.GetStats(_url, indexName);
 
             ShowIndexDialog("IndicesStats", indexName, content);
         }
@@ -309,7 +309,7 @@ namespace ElasticView.UI.Models
         }
 
         #endregion
-        private void ShowIndexDialog(string pageTitle, string indexName, string content)
+        private void ShowIndexDialog(string pageTitle, string indexName, string content = "")
         {
             var window = new UI.Windows.IndexInfo(pageTitle, indexName, content);
             window.WindowStartupLocation = WindowStartupLocation.CenterOwner;

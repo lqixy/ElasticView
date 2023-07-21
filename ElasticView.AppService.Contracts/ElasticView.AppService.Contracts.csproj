@@ -8,6 +8,8 @@
 
   <ItemGroup>
     <Compile Remove="Output\NodesStatsOutput.cs" />
+    <Compile Remove="Output\QueryIndicesInfoDto.cs" />
+    <Compile Remove="Output\QueryIndicesStatsDto.cs" />
   </ItemGroup>
 
   <ItemGroup>

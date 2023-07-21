@@ -22,6 +22,7 @@ namespace ElasticView.AppService.Contracts
         Task<string> Get(string url, string indexName);
         Task GetAlias(string url, string indexName);
         Task<IEnumerable<IndexAliasOutput>> GetAliases(string url);
+        Task<string> GetStats(string url, string indexName);
 
         //Task<IEnumerable<IndexAliasOutput>> GetAliases(string url, IEnumerable<string> aliases);
         Task<bool> OpenIndex(string url, string indexName);

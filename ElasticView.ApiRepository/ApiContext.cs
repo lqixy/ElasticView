@@ -1,5 +1,6 @@
 ﻿using ElasticView.ApiDomain;
 using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
 using Serilog;
 using Serilog.Core;
 using System;
@@ -47,7 +48,6 @@ namespace ElasticView.ApiRepository
                         _logger.Error($"请示api错误,StatusCode:{response.StatusCode} \r\n ReasonPhrase:{response.ReasonPhrase}.\r\n content:{content}");
                         //throw new Exception($"请示api错误,StatusCode:{response.StatusCode} \r\n ReasonPhrase:{response.ReasonPhrase}");
                     }
-
                     var jsonObject = JsonConvert.DeserializeObject<TResult>(content);
                     return jsonObject;
                 }
