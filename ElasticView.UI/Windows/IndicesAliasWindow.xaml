@@ -1,0 +1,94 @@
+﻿<Window x:Class="ElasticView.UI.Windows.IndicesAliasWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:hc="https://handyorg.github.io/handycontrol"
+        xmlns:local="clr-namespace:ElasticView.UI.Windows" 
+        xmlns:vm="clr-namespace:ElasticView.UI.Models"
+        xmlns:md="http://materialdesigninxaml.net/winfx/xaml/themes"
+        mc:Ignorable="d"
+        x:Name="_indicesAliasWindow"
+        Title="IndicesAliasWindow" Height="450" Width="800">
+    <Window.DataContext>
+        <vm:IndicesAliasWindowViewModel />
+    </Window.DataContext>
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="40" />
+            <RowDefinition Height="*" />
+        </Grid.RowDefinitions>
+        <Grid Grid.Row="0" Background="{StaticResource mainTitleBackgrond}">
+            <Label Content="管理别名"
+                   FontSize="18"
+                   FontWeight="Bold"
+                   Margin="10,0,0,0"
+                   VerticalAlignment="Center"
+                   />
+        </Grid>
+
+        <Grid Grid.Row="1">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="40" />
+                <RowDefinition Height="40" />
+                <RowDefinition Height="*" />
+            </Grid.RowDefinitions>
+            <Border Margin="10,0,0,0" BorderBrush="{StaticResource borderColor}"
+                    BorderThickness="0,1,0,0"
+                    >
+                <TextBlock 
+                    VerticalAlignment="Center"
+                    FontSize="18"
+                    Text="{Binding IndexName, StringFormat='索引: {0}'}" />
+            </Border>
+            <Grid Grid.Row="1" Margin="10,0,10,0">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="8*" />
+                    <ColumnDefinition Width="2*" />
+                </Grid.ColumnDefinitions>
+                <TextBox 
+                    FontSize="18"
+                    Margin="0,0,20,0" Grid.Column="0"
+                          Text="{Binding AliasName, UpdateSourceTrigger=PropertyChanged}"
+                         />
+                <Button Grid.Column="1" Content="添加新别名"
+                        Command="{Binding AddNewAliasNameCommand}"
+                        Margin="10,0,10,0"
+                        />
+            </Grid>
+
+            <DataGrid Grid.Row="2" 
+                      ItemsSource="{Binding SourcesData}"
+                      AutoGenerateColumns="False"
+                      IsReadOnly="True"
+                      >
+                <DataGrid.Resources>
+                    <Style TargetType="DataGridCell">
+                        <Style.Triggers>
+                            <Trigger Property="IsSelected" Value="True">
+                                <Setter Property="Foreground" Value="Black" />
+                                <Setter Property="BorderThickness" Value="0" />
+                            </Trigger>
+                        </Style.Triggers>
+                    </Style>
+                </DataGrid.Resources>
+                <DataGrid.Columns>
+                    <DataGridTextColumn Width="*" Header="别名" Binding="{Binding Name}"
+                                       
+                                        />
+                    <DataGridTemplateColumn Width="100">
+                        <DataGridTemplateColumn.CellTemplate>
+                            <DataTemplate>
+                                <Button Style="{StaticResource ButtonDanger}"
+                                        Content="删除"
+                                        Command="{Binding DataContext.DeleteAliasNameCommand, ElementName=_indicesAliasWindow}"
+                                        CommandParameter="{Binding Name}"
+                                        />
+                            </DataTemplate>
+                        </DataGridTemplateColumn.CellTemplate>
+                    </DataGridTemplateColumn>
+                </DataGrid.Columns>
+            </DataGrid>
+        </Grid>
+    </Grid>
+</Window>

@@ -55,26 +55,27 @@ namespace ElasticView.UI.Models
 
             try
             {
-                var indicesInfo = await appService.GetIndices(url);
-                this.IndicesInfo = mapper.Map<IndicesInfoViewModel>(indicesInfo);
+                var summary = await appService.GetSummary(url);
+                //var indicesInfo = await appService.GetIndices(url);
+                this.IndicesInfo = mapper.Map<IndicesInfoViewModel>(summary.IndicesInfo);
 
-                var clusterHealthInfo = await appService.GetClusterHealth(url);
-                this.ClusterHealthInfo = mapper.Map<ClusterHealthInfoViewModel>(clusterHealthInfo);
+                //var clusterHealthInfo = await appService.GetClusterHealth(url);
+                this.ClusterHealthInfo = mapper.Map<ClusterHealthInfoViewModel>(summary.ClusterInfo.ClusterHealthInfo);
 
-                var clusterStatsInfo = await appService.GetClusterStatsInfo(url);
-                this.ClusterStatsInfo = mapper.Map<ClusterStatsInfoViewModel>(clusterStatsInfo);
+                //var clusterStatsInfo = await appService.GetClusterStatsInfo(url);
+                this.ClusterStatsInfo = mapper.Map<ClusterStatsInfoViewModel>(summary.ClusterInfo.ClusterStatsInfo);
 
-                var fileSystemInfo = await appService.GetEsFileSystemInfo(url);
-                this.FileSystemInfo = mapper.Map<EsFileSystemInfoViewModel>(fileSystemInfo);
+                //var fileSystemInfo = await appService.GetEsFileSystemInfo(url);
+                this.FileSystemInfo = mapper.Map<EsFileSystemInfoViewModel>(summary.ClusterInfo.FileSystemInfo);
 
-                var jvmInfo = await appService.GetJvm(url);
-                this.JvmInfo = mapper.Map<JvmInfoViewModel>(jvmInfo);
+                //var jvmInfo = await appService.GetJvm(url);
+                this.JvmInfo = mapper.Map<JvmInfoViewModel>(summary.ClusterInfo.Jvm);
 
-                var memberInfo = await appService.GetOsMemberInfo(url);
-                this.MemberInfo = mapper.Map<OsMemberInfoViewModel>(memberInfo);
+                //var memberInfo = await appService.GetOsMemberInfo(url);
+                this.MemberInfo = mapper.Map<OsMemberInfoViewModel>(summary.ClusterInfo.MemberInfo);
 
-                var cpuInfo = await appService.GetCpuInfo(url);
-                this.CpuInfo = mapper.Map<OSCpuInfoViewModel>(cpuInfo);
+                //var cpuInfo = await appService.GetCpuInfo(url);
+                this.CpuInfo = mapper.Map<OSCpuInfoViewModel>(summary.ClusterInfo.CpuInfo);
 
             }
             catch (UserFriendlyException e)

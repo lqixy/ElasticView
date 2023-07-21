@@ -108,34 +108,34 @@ namespace ElasticView.AppService.Contracts
         }
 
         [JsonProperty("uuid")]
-        public string UUID { get;  set; } = string.Empty;
+        public string UUID { get; set; } = string.Empty;
 
         [JsonProperty("pri")]
-        public string Primary { get;  set; } = string.Empty;
+        public string Primary { get; set; } = string.Empty;
 
         [JsonProperty("pri.store.size")]
-        public string PrimaryStoreSize { get;  set; } = string.Empty;
+        public string PrimaryStoreSize { get; set; } = string.Empty;
 
         [JsonProperty("rep")]
-        public string Replica { get;  set; } = string.Empty;
+        public string Replica { get; set; } = string.Empty;
 
         [JsonProperty("index")]
-        public string Index { get;  set; } = string.Empty;
+        public string Index { get; set; } = string.Empty;
 
         [JsonProperty("docs.count")]
-        public string DocsCount { get;  set; } = string.Empty;
+        public string DocsCount { get; set; } = string.Empty;
 
         [JsonProperty("docs.deleted")]
-        public string DocsDeleted { get;  set; } = string.Empty;
+        public string DocsDeleted { get; set; } = string.Empty;
 
         [JsonProperty("store.size")]
-        public string StoreSize { get;  set; } = string.Empty;
+        public string StoreSize { get; set; } = string.Empty;
 
         [JsonProperty("health")]
         public string Health { get; set; } = string.Empty;
 
         [JsonProperty("status")]
-        public string Status { get;  set; } = string.Empty;
+        public string Status { get; set; } = string.Empty;
 
         public string[] Aliases { get; set; } = new string[0];
 
@@ -284,11 +284,11 @@ namespace ElasticView.AppService.Contracts
             FreeInBytes = freeInBytes;
         }
 
-        public long TotalInBytes { get;  set; }
+        public long TotalInBytes { get; set; }
 
         public long UsedInBytes => TotalInBytes - FreeInBytes;
 
-        public long FreeInBytes { get;  set; }
+        public long FreeInBytes { get; set; }
     }
 
     //public class OSSystemInfo
@@ -326,11 +326,11 @@ namespace ElasticView.AppService.Contracts
             FreePercent = freePercent;
         }
 
-        public long TotalBytes { get;  set; }
-        public long FreeBytes { get;  set; }
+        public long TotalBytes { get; set; }
+        public long FreeBytes { get; set; }
 
-        public int UsedPercent { get;  set; }
-        public int FreePercent { get;  set; }
+        public int UsedPercent { get; set; }
+        public int FreePercent { get; set; }
     }
 
     public class JvmInfo
@@ -361,6 +361,20 @@ namespace ElasticView.AppService.Contracts
             JvmMemberInfos = jvmMemberInfos;
         }
 
+        public JvmInfo(string version, long upTimeInMillis, long threads, long heapMaxInBytes, long heapUsedInBytes)
+        {
+            Version = version;
+            UpTimeInMillis = upTimeInMillis;
+            Threads = threads;
+            HeapMaxInBytes = heapMaxInBytes;
+            HeapUsedInBytes = heapUsedInBytes;
+        }
+
+        public void UpdateJvmMemberInfos(IEnumerable<JvmMemberInfo> infos)
+        {
+            this.JvmMemberInfos = infos;
+        }
+
         public IEnumerable<JvmMemberInfo> JvmMemberInfos { get; set; } = Enumerable.Empty<JvmMemberInfo>();
     }
 
@@ -385,12 +399,12 @@ namespace ElasticView.AppService.Contracts
             UptimeInMilliseconds = uptimeInMilliseconds;
         }
 
-        public long HeapMaxInBytes { get;  set; }
-        public string HeapMax { get;  set; }
-        public long HeapUsedInBytes { get;  set; }
-        public string HeapUsed { get;  set; }
-        public long HeapUsedPercent { get;  set; }
-        public long UptimeInMilliseconds { get;  set; }
+        public long HeapMaxInBytes { get; set; }
+        public string HeapMax { get; set; }
+        public long HeapUsedInBytes { get; set; }
+        public string HeapUsed { get; set; }
+        public long HeapUsedPercent { get; set; }
+        public long UptimeInMilliseconds { get; set; }
     }
 
 }

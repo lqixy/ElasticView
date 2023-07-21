@@ -1,5 +1,7 @@
 ﻿using ElasticView.ApiDomain;
 using Newtonsoft.Json;
+using Serilog;
+using Serilog.Core;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -12,10 +14,13 @@ namespace ElasticView.ApiRepository
     public class ApiContext : IApiContext
     {
         private readonly HttpClient _httpClient;
+        private readonly ILogger _logger;
 
-        public ApiContext(HttpClient httpClient)
+        public ApiContext(HttpClient httpClient,
+            ILogger logger)
         {
             _httpClient = httpClient;
+            _logger = logger;
         }
 
 
@@ -32,16 +37,17 @@ namespace ElasticView.ApiRepository
             {
                 using (var response = await _httpClient.GetAsync(url))
                 {
+                    var content = await response.Content.ReadAsStringAsync();
                     if (response.IsSuccessStatusCode)
                     {
-
+                        _logger.Information($"请求成功.HttpMethod:GET \r\n url: {url}.\r\n 返回内容: {content}\r\n");
                     }
                     else
                     {
-                        throw new Exception($"请示api错误,StatusCode:{response.StatusCode} \r\n ReasonPhrase:{response.ReasonPhrase}");
+                        _logger.Error($"请示api错误,StatusCode:{response.StatusCode} \r\n ReasonPhrase:{response.ReasonPhrase}.\r\n content:{content}");
+                        //throw new Exception($"请示api错误,StatusCode:{response.StatusCode} \r\n ReasonPhrase:{response.ReasonPhrase}");
                     }
 
-                    var content = await response.Content.ReadAsStringAsync();
                     var jsonObject = JsonConvert.DeserializeObject<TResult>(content);
                     return jsonObject;
                 }
@@ -53,6 +59,11 @@ namespace ElasticView.ApiRepository
             catch (JsonSerializationException e)
             {
                 throw new UserFriendlyException($"json序列化错误: {e.Message}");
+            }
+            catch (Exception e)
+            {
+                _logger.Error(e.Message, e);
+                return default;
             }
         }
 
@@ -63,16 +74,17 @@ namespace ElasticView.ApiRepository
                 var stringContent = new StringContent(input);
                 using (var response = await _httpClient.PostAsync(url, stringContent))
                 {
+                    var content = await response.Content.ReadAsStringAsync();
                     if (response.IsSuccessStatusCode)
                     {
-
+                        _logger.Information($"请求成功.HttpMethod:POST. \r\n  url: {url}. HttpContent: {stringContent}.\r\n 返回内容: {content}");
                     }
                     else
                     {
-                        throw new UserFriendlyException($"请求api错误,StatusCode:{response.StatusCode} \r\n ReasonPhrase:{response.ReasonPhrase}");
+                        _logger.Error($"请示api错误,StatusCode:{response.StatusCode} \r\n ReasonPhrase:{response.ReasonPhrase}.\r\n content:{content}");
+                        //throw new Exception($"请示api错误,StatusCode:{response.StatusCode} \r\n ReasonPhrase:{response.ReasonPhrase}");
                     }
 
-                    var content = await response.Content.ReadAsStringAsync();
                     var jsonObject = JsonConvert.DeserializeObject<TResult>(content);
                     return jsonObject;
                 }
@@ -84,6 +96,11 @@ namespace ElasticView.ApiRepository
             catch (JsonSerializationException e)
             {
                 throw new UserFriendlyException($"json序列化错误: {e.Message}");
+            }
+            catch (Exception e)
+            {
+                _logger.Error(e.Message, e);
+                return default;
             }
         }
 
@@ -97,16 +114,17 @@ namespace ElasticView.ApiRepository
                     new StringContent(input.ToJson(), Encoding.UTF8, "application/json");
                 using (var response = await _httpClient.PutAsync(url, stringContent))
                 {
+                    var content = await response.Content.ReadAsStringAsync();
                     if (response.IsSuccessStatusCode)
                     {
-
+                        _logger.Information($"请求成功.HttpMethod:PUT \r\n  url: {url}.\r\n 返回内容: {content}");
                     }
                     else
                     {
-                        //throw new UserFriendlyException($"请求api错误,StatusCode:{response.StatusCode} \r\n ReasonPhrase:{response.ReasonPhrase}");
+                        _logger.Error($"请示api错误,StatusCode:{response.StatusCode} \r\n ReasonPhrase:{response.ReasonPhrase}.\r\n content:{content}");
+                        //throw new Exception($"请示api错误,StatusCode:{response.StatusCode} \r\n ReasonPhrase:{response.ReasonPhrase}");
                     }
 
-                    var content = await response.Content.ReadAsStringAsync();
                     var jsonObject = JsonConvert.DeserializeObject<TResult>(content);
                     return jsonObject;
                 }
@@ -119,6 +137,11 @@ namespace ElasticView.ApiRepository
             catch (JsonSerializationException e)
             {
                 throw new UserFriendlyException($"json序列化错误: {e.Message}");
+            }
+            catch (Exception e)
+            {
+                _logger.Error(e.Message, e);
+                return default;
             }
         }
 
@@ -126,21 +149,21 @@ namespace ElasticView.ApiRepository
         {
             try
             {
-
                 var stringContent = string.IsNullOrWhiteSpace(input)
                     ? null : new StringContent($"{input}", Encoding.UTF8, "application/json");
                 using (var response = await _httpClient.PutAsync(url, stringContent))
                 {
+                    var content = await response.Content.ReadAsStringAsync();
                     if (response.IsSuccessStatusCode)
                     {
-
+                        _logger.Information($"请求成功.HttpMethod:PUT \r\n  url: {url}. HttpContent: {stringContent}.\r\n 返回内容: {content}");
                     }
                     else
                     {
-                        //throw new UserFriendlyException($"请求api错误,StatusCode:{response.StatusCode} \r\n ReasonPhrase:{response.ReasonPhrase}");
+                        _logger.Error($"请示api错误,StatusCode:{response.StatusCode} \r\n ReasonPhrase:{response.ReasonPhrase}.\r\n content:{content}");
+                        //throw new Exception($"请示api错误,StatusCode:{response.StatusCode} \r\n ReasonPhrase:{response.ReasonPhrase}");
                     }
 
-                    var content = await response.Content.ReadAsStringAsync();
                     var jsonObject = JsonConvert.DeserializeObject<TResult>(content);
                     return jsonObject;
                 }
@@ -153,6 +176,11 @@ namespace ElasticView.ApiRepository
             catch (JsonSerializationException e)
             {
                 throw new UserFriendlyException($"json序列化错误: {e.Message}");
+            }
+            catch (Exception e)
+            {
+                _logger.Error(e.Message, e);
+                return default;
             }
         }
 
@@ -162,16 +190,17 @@ namespace ElasticView.ApiRepository
             {
                 using (var response = await _httpClient.DeleteAsync(url))
                 {
+                    var content = await response.Content.ReadAsStringAsync();
                     if (response.IsSuccessStatusCode)
                     {
-
+                        _logger.Information($"请求成功.HttpMethod:DELETE \r\n  url: {url}.\r\n 返回内容: {content}");
                     }
                     else
                     {
-                        throw new UserFriendlyException($"请求api错误,StatusCode:{response.StatusCode} \r\n ReasonPhrase:{response.ReasonPhrase}");
+                        _logger.Error($"请示api错误,StatusCode:{response.StatusCode} \r\n ReasonPhrase:{response.ReasonPhrase}.\r\n content:{content}");
+                        //throw new Exception($"请示api错误,StatusCode:{response.StatusCode} \r\n ReasonPhrase:{response.ReasonPhrase}");
                     }
 
-                    var content = await response.Content.ReadAsStringAsync();
                     var jsonObject = JsonConvert.DeserializeObject<TResult>(content);
                     return jsonObject;
                 }
@@ -183,6 +212,11 @@ namespace ElasticView.ApiRepository
             catch (JsonSerializationException e)
             {
                 throw new UserFriendlyException($"json序列化错误: {e.Message}");
+            }
+            catch (Exception e)
+            {
+                _logger.Error(e.Message, e);
+                return default;
             }
         }
 

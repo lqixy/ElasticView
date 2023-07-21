@@ -7,6 +7,7 @@ using ElasticView.UI.Models.Mappers;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.DependencyModel;
 using Microsoft.Extensions.Hosting;
+using Serilog;
 using System;
 using System.Collections.Generic;
 using System.Configuration;
@@ -33,6 +34,13 @@ namespace ElasticView.UI
         public App()
         {
             AppHost = Host.CreateDefaultBuilder()
+                .UseSerilog((context, config) =>
+                {
+                    config.WriteTo.File($"log/log-.log",
+                        rollingInterval: RollingInterval.Hour)
+                    .MinimumLevel.Information()
+                    ;
+                })
                 .ConfigureServices((context, services) =>
                 {
                     services.AddSingleton<MainWindow>();

@@ -197,10 +197,26 @@ namespace ElasticView.UI.Models
         public IAsyncRelayCommand<string> DeleteCommand =>
             new AsyncRelayCommand<string>(Delete);
 
+        public IAsyncRelayCommand<string> OpenAliasNameWindowCommand =>
+            new AsyncRelayCommand<string>(OpenAliasNameWindow);
+
         #endregion
 
         #region CommandFunction
 
+        private async Task OpenAliasNameWindow(string indexName)
+        {
+            var window = new IndicesAliasWindow(_url, indexName, indexAppService)
+            {
+                WindowStartupLocation = WindowStartupLocation.CenterOwner,
+                Owner = Application.Current.MainWindow,
+            };
+            var dialog = window.ShowDialog();
+            if (dialog is not null && dialog.Value)
+            {
+                await InitSource();
+            }
+        }
         private async Task Delete(string indexName)
         {
             CheckIndexName(indexName);
@@ -327,6 +343,7 @@ namespace ElasticView.UI.Models
                 await InitSource();
             }
         }
+
     }
 
 }

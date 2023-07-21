@@ -254,6 +254,9 @@
                                                 BorderThickness="0"
                                                 Cursor="Hand"
                                                     HorizontalAlignment="Left"
+                                                    Command="{Binding DataContext.OpenAliasNameWindowCommand,
+                                                ElementName=_indicesPage}"
+                                                    CommandParameter="{Binding Index}"
                                                 >
                                                 <StackPanel Orientation="Horizontal">
                                                     <md:PackIcon Kind="At" />
@@ -269,7 +272,8 @@
                                                 BorderThickness="0"
                                                 Cursor="Hand"
                                                     HorizontalAlignment="Left"
-                                                    Command="{Binding DataContext.ForceMergeCommand, ElementName=_indicesPage}"
+                                                    Command="{Binding DataContext.ForceMergeCommand,
+                                                ElementName=_indicesPage}"
                                                     CommandParameter="{Binding Index}"
                                                 >
                                                 <StackPanel Orientation="Horizontal">
