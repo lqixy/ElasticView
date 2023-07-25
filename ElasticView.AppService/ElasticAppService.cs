@@ -154,7 +154,10 @@ namespace ElasticView.AppService
         public async Task<StatusEnum> GetStatus(string url)
         {
             if (string.IsNullOrWhiteSpace(url)) { return StatusEnum.Default; }
+            //if (url.Contains("@"))
+            //{
 
+            //}
 
             var health = await GetClusterHealth(url);
             if (health is null) return StatusEnum.Default;

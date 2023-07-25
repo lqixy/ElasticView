@@ -24,18 +24,29 @@ namespace ElasticView.ApiRepository
             _logger = logger;
         }
 
-
-        public async Task<TResult> GetAsync<TResult>(string url, string userName = "", string pwd = "")
+        private void SetHttpClientAuthorization(ref string url)
         {
-            //_httpClient.DefaultRequestHeaders.Authorization = new System.Net.Http.Headers.AuthenticationHeaderValue()
+            if (!url.Contains("@")) return;
+
+            var uri = new Uri(url);
+            var userName = uri.UserInfo.Split(':')[0];
+            var pwd = uri.UserInfo.Split(":")[1];
+            url = $"{uri.Scheme}://{uri.Host}:{uri.Port}{uri.AbsolutePath}{uri.Query}";
+
             if (!string.IsNullOrWhiteSpace(userName))
             {
                 _httpClient.DefaultRequestHeaders.Authorization =
                     new AuthenticationHeaderValue("Basic",
                     Convert.ToBase64String(Encoding.UTF8.GetBytes($"{userName}:{pwd}")));
             }
+        }
+
+        public async Task<TResult> GetAsync<TResult>(string url)
+        {
             try
             {
+                SetHttpClientAuthorization(ref url);
+
                 using (var response = await _httpClient.GetAsync(url))
                 {
                     var content = await response.Content.ReadAsStringAsync();
@@ -71,6 +82,8 @@ namespace ElasticView.ApiRepository
         {
             try
             {
+                SetHttpClientAuthorization(ref url);
+
                 var stringContent = new StringContent(input);
                 using (var response = await _httpClient.PostAsync(url, stringContent))
                 {
@@ -109,6 +122,8 @@ namespace ElasticView.ApiRepository
         {
             try
             {
+                SetHttpClientAuthorization(ref url);
+
                 var stringContent = input is null
                     ? null :
                     new StringContent(input.ToJson(), Encoding.UTF8, "application/json");
@@ -149,6 +164,8 @@ namespace ElasticView.ApiRepository
         {
             try
             {
+                SetHttpClientAuthorization(ref url);
+
                 var stringContent = string.IsNullOrWhiteSpace(input)
                     ? null : new StringContent($"{input}", Encoding.UTF8, "application/json");
                 using (var response = await _httpClient.PutAsync(url, stringContent))
@@ -188,6 +205,8 @@ namespace ElasticView.ApiRepository
         {
             try
             {
+                SetHttpClientAuthorization(ref url);
+
                 using (var response = await _httpClient.DeleteAsync(url))
                 {
                     var content = await response.Content.ReadAsStringAsync();
