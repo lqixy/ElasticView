@@ -7,7 +7,8 @@
         xmlns:local="clr-namespace:ElasticView.UI"
         xmlns:convert="clr-namespace:ElasticView.UI.Pages"
         xmlns:md="http://materialdesigninxaml.net/winfx/xaml/themes" 
-        xmlns:controllers="clr-namespace:ElasticView.UI.Controllers" xmlns:hc="https://handyorg.github.io/handycontrol"
+        xmlns:controllers="clr-namespace:ElasticView.UI.Controllers" 
+        xmlns:hc="https://handyorg.github.io/handycontrol"
         mc:Ignorable="d"
         Title="ElasticView" Height="768" Width="1024">
     <Window.DataContext>
@@ -107,52 +108,13 @@
                 <ColumnDefinition Width="100"/>
                 <ColumnDefinition Width="*"/>
             </Grid.ColumnDefinitions>
-            <!--<Label Foreground="#00A36E" FontSize="28" VerticalContentAlignment="Center" HorizontalContentAlignment="Center" >Elastic</Label>-->
             <Image Source="Assets/Images/elasticsearch.png" Width="40" />
             <Grid Grid.Column="1">
                 <Grid.ColumnDefinitions>
-                    <!--<ColumnDefinition Width="1*" />-->
                     <ColumnDefinition Width="4*" />
                     <ColumnDefinition Width="2*" />
                     <ColumnDefinition Width="3*" />
                 </Grid.ColumnDefinitions>
-                <!--<Border  Grid.Column="0" 
-                         Background="#F6F7F7" Height="40"
-                         CornerRadius="5"
-                         >
-                    <md:PackIcon Kind="Sitemap" Background="#F6F7F7" 
-                                             Foreground="{StaticResource mainGreen}" 
-                                             Width="24" Height="28" HorizontalAlignment="Center" 
-                                             VerticalAlignment="Center" />
-                </Border>-->
-                <!--<Border Grid.Column="0" Height="40" Background="White"
-                        CornerRadius="5"
-                        >
-                    <TextBox  BorderThickness="0" 
-                               FontWeight="Thin" FontSize="20"
-                               VerticalAlignment="Center"
-                               Text="{Binding EsUrl}"
-                               >
-                        <TextBox.ToolTip>
-                            <ToolTip Content="如有密码,使用http://username:password@localhost:9200" />
-                        </TextBox.ToolTip>
-                    </TextBox>
-                </Border>-->
-                <!--<TextBox Grid.Column="1"
-                         Style="{StaticResource TextBoxPlacholdStyle}"
-                         Width="auto"
-                         Height="40"
-                         Tag="userName"
-                         Background="White"
-                         />-->
-                <!--<TextBox Grid.Column="2"
-                         Style="{StaticResource TextBoxPlacholdStyle}"
-                         Width="auto"
-                         Height="40"
-                         Tag="password"
-                         Background="White"
-                         />-->
-                <!--<PasswordBox Grid.Column="2" />-->
                 <hc:TextBox Grid.Column="0"
                             Height="40"
                             Margin="5,0,5,0"
@@ -164,25 +126,7 @@
                         <ToolTip Content="如有密码,使用http://username:password@localhost:9200" />
                     </hc:TextBox.ToolTip>
                 </hc:TextBox>
-                <!--<hc:TextBox Grid.Column="1"
-                            Height="40"
-                            Margin="5,0,5,0"
-                            Text="{Binding EsConnect.UserName}"
-                            hc:InfoElement.Placeholder="username"
-                            />
-                <hc:PasswordBox Name="esPwd" Grid.Column="2" Height="40" 
-                                ShowEyeButton="True"
-                            Margin="5,0,5,0"
-                                IsSafeEnabled="False"
-                                hc:InfoElement.Placeholder="password"
-                                />-->
-                <!--<hc:TextBox Grid.Column="2" Visibility="Collapsed"
-                            Name="realPwd"
-                            Text="{Binding UnsafePassword, ElementName=esPwd, 
-                                    UpdateSourceTrigger=PropertyChanged}"
-                            />-->
- 
-                    <Button  Grid.Column="1"
+                <Button  Grid.Column="1"
                              Margin="5,0,5,0"
                              Style="{StaticResource MaterialDesignFlatButton}"  
                                 Height="40"
@@ -190,19 +134,17 @@
                             Background="{StaticResource mainlightGreen}"
                                   Command="{Binding ConnectCommand}"
                                 
-                            Content="Connect" /> 
+                            Content="Connect" />
 
                 <Grid Grid.Column="4">
                     <Grid.ColumnDefinitions>
                         <ColumnDefinition Width="2*"/>
                         <ColumnDefinition Width="1*"/>
                     </Grid.ColumnDefinitions>
-                    <Label Grid.Column="0" FontSize="16" Foreground="#9D9D9D" HorizontalAlignment="Right" VerticalAlignment="Center">集群健康状态:</Label>
-                    <!--<Border BorderThickness="0" CornerRadius="5"  Grid.Column="1" Height="30" Width="60" >
-                        <Label Background="White" FontSize="16" x:Name="statusLabel" Foreground="{StaticResource mainDarkBlue}" 
-                               HorizontalAlignment="Stretch" VerticalAlignment="Stretch"  
-                               FontWeight="Bold"  Content="未连接" />
-                    </Border>-->
+                    <Label Grid.Column="0" FontSize="16" 
+                           Foreground="#9D9D9D"
+                           HorizontalAlignment="Right" 
+                           VerticalAlignment="Center">集群健康状态:</Label>
                     <md:Card Grid.Column="1"
                       Width="60" Height="30" 
                       Background="{Binding StatusBackground, FallbackValue=White}"
@@ -243,9 +185,9 @@
                         <RowDefinition Height="1*" />
                         <!--<RowDefinition Height="4*" />-->
                     </Grid.RowDefinitions>
-                    <md:PackIcon Kind="Menu" Style="{StaticResource MenuIconStyle}" Foreground="#3C566F" />
-
-
+                    <md:PackIcon Kind="Menu" 
+                                 Style="{StaticResource MenuIconStyle}" 
+                                 Foreground="#3C566F" />
                     <ToggleButton  Grid.Row="1" 
                                    Style="{DynamicResource MenuToggleButtonStyle}" 
                                    Tag="ViewDashboard"
@@ -256,13 +198,6 @@
                                    Command="{Binding NavToPageCommand}"
                                    CommandParameter="{Binding RelativeSource={RelativeSource Mode=Self}, Path=TabIndex}"
                                    >
-                        <!--<ToggleButton.IsChecked>
-                            <MultiBinding Converter="{StaticResource MainWindowToggleButtonIsCheckedConvert}">
-                                <Binding Path="PageIndex" />
-                                <Binding RelativeSource="{RelativeSource Mode=Self}" Path="TabIndex"  />
-                            </MultiBinding>
-                        </ToggleButton.IsChecked>-->
-
                     </ToggleButton>
                     <ToggleButton Grid.Row="2" 
                                   Style="{DynamicResource MenuToggleButtonStyle}" 
@@ -274,12 +209,6 @@
                                    Command="{Binding NavToPageCommand}"
                                    CommandParameter="{Binding RelativeSource={RelativeSource Mode=Self}, Path=TabIndex}"
                                       >
-                        <!--<ToggleButton.IsChecked>
-                            <MultiBinding Converter="{StaticResource MainWindowToggleButtonIsCheckedConvert}">
-                                <Binding Path="PageIndex" />
-                                <Binding RelativeSource="{RelativeSource Mode=Self}" Path="TabIndex"  />
-                            </MultiBinding>
-                        </ToggleButton.IsChecked>-->
                     </ToggleButton>
                     <ToggleButton  Grid.Row="3"
                                    Style="{DynamicResource MenuToggleButtonStyle}" 
@@ -291,50 +220,31 @@
                                    Command="{Binding NavToPageCommand}"
                                    CommandParameter="{Binding RelativeSource={RelativeSource Mode=Self}, Path=TabIndex}"
                                       >
-                        <!--<ToggleButton.IsChecked>
-                            <MultiBinding Converter="{StaticResource MainWindowToggleButtonIsCheckedConvert}">
-                                <Binding Path="PageIndex" />
-                                <Binding RelativeSource="{RelativeSource Mode=Self}" Path="TabIndex"  />
-                            </MultiBinding>
-                        </ToggleButton.IsChecked>-->
                     </ToggleButton>
-                    <!--<ToggleButton  Grid.Row="4"
-                                   Style="{DynamicResource MenuToggleButtonStyle}" 
-                                   Tag="BookOpenOutline" 
-                                   Content="Shards"
-                                   TabIndex="3"
-                                   
-                                   IsChecked="{Binding ShardsSelected}"
-                                   Command="{Binding NavToPageCommand}"
-                                   CommandParameter="{Binding RelativeSource={RelativeSource Mode=Self}, Path=TabIndex}"
-                                      > 
-                    </ToggleButton>-->
-                    <!--<ToggleButton Grid.Row="5" 
+                    <ToggleButton Grid.Row="4" 
                                   Style="{DynamicResource MenuToggleButtonStyle}" 
                                   Tag="Search" 
                                   Content="搜索"
+                                  TabIndex="3"
+                                   
+                                   IsChecked="{Binding SearchSelected}"
+                                   Command="{Binding NavToPageCommand}"
+                                   CommandParameter="{Binding RelativeSource={RelativeSource Mode=Self}, Path=TabIndex}"
+                                      >
+                    </ToggleButton>
+                    <ToggleButton Grid.Row="5" 
+                                  Style="{DynamicResource MenuToggleButtonStyle}" 
+                                  Tag="Tools" 
+                                  Content="工具"
                                   TabIndex="4"
                                    
                                    IsChecked="{Binding SearchSelected}"
                                    Command="{Binding NavToPageCommand}"
                                    CommandParameter="{Binding RelativeSource={RelativeSource Mode=Self}, Path=TabIndex}"
-                                      > 
-                    </ToggleButton>-->
-                    <!--<ToggleButton  Grid.Row="6" 
-                                   Style="{DynamicResource MenuToggleButtonStyle}" 
-                                   Tag="Help" 
-                                   Content="帮助"
-                                   TabIndex="5"
                                       >
-                        -->
-                    <!--<ToggleButton.IsChecked>
-                            <MultiBinding Converter="{StaticResource MainWindowToggleButtonIsCheckedConvert}">
-                                <Binding Path="PageIndex" />
-                                <Binding RelativeSource="{RelativeSource Mode=Self}" Path="TabIndex"  />
-                            </MultiBinding>
-                        </ToggleButton.IsChecked>-->
-                    <!--
-                    </ToggleButton>-->
+                    </ToggleButton>
+
+
 
                 </Grid>
 

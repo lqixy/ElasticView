@@ -39,22 +39,13 @@ namespace ElasticView.UI.Models
         private bool indicesSelected;
 
         [ObservableProperty]
+        private bool searchSelected;
+
+        [ObservableProperty]
+        private bool toolsSelected;
+
+        [ObservableProperty]
         private bool canUse = false;
-
-        //[ObservableProperty]
-        //private bool shardsSelected;
-
-        //[ObservableProperty]
-        //private bool searchSelected;
-
-        //[RelayCommand(CanExecute = nameof(ButtonCanClick))]
-        //private void ButtonClick()
-        //{
-
-        //}
-
-        //private bool ButtonCanClick() => !string.IsNullOrWhiteSpace(EsUrl);
-
 
         public void Init(IServiceProvider serviceProvider,
             Frame frame)
@@ -63,7 +54,6 @@ namespace ElasticView.UI.Models
             this.frame = frame;
         }
 
-        //public IAsyncRelayCommand<string> ConnectCommand { get; }
         public IAsyncRelayCommand ConnectCommand => new AsyncRelayCommand(OpenDashPage);
 
         private async Task OpenDashPage()
@@ -122,8 +112,8 @@ namespace ElasticView.UI.Models
             this.DashSelected = 0 == CurrentPageIndex;
             this.NodesSelected = 1 == CurrentPageIndex;
             this.IndicesSelected = 2 == CurrentPageIndex;
-            //this.ShardsSelected = 3 == CurrentPageIndex;
-            //this.SearchSelected = 4 == CurrentPageIndex;
+            this.SearchSelected = 3 == CurrentPageIndex;
+            this.ToolsSelected = 4 == CurrentPageIndex;
         }
 
         private void SwitchPage(int index)
